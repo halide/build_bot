@@ -29,7 +29,7 @@ except ImportError:
 
 buildmaster_host = '104.154.46.123'
 port = 9989
-slavename = 'arm-ubuntu-slave'
+slavename = 'linux-slave'
 passwd = os.environ.get('HALIDE_BB_PASS')
 keepalive = 600
 usepty = 0
