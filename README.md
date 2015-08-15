@@ -11,7 +11,7 @@ pip install buildbot
 To create and launch the build master:
 
 ```
-export HALIDE_BB_PASS=some_password
+echo some_password > halide_bb_pass.txt
 buildbot creater-master master
 buildbot start master
 ```
@@ -19,11 +19,11 @@ buildbot start master
 To launch a build slave:
 
 ```
-export HALIDE_BB_PASS=the_same_password
-buildslave start ubuntu_slave
+echo the_same_password > halide_bb_pass.txt
+buildslave start linux_slave
 ```
 
 If you're making your own master, you'll may need to edit
-ubuntu_slave/buildbot.tac to point to the ip address of your build
+linux_slave/buildbot.tac to point to the ip address of your build
 master. In the repo it's configured to point to the public Halide
 build master.
