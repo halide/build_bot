@@ -30,7 +30,7 @@ except ImportError:
 buildmaster_host = '104.154.46.123'
 port = 9989
 slavename = 'win-slave'
-passwd = os.environ.get('HALIDE_BB_PASS')
+passwd = open('halide_bb_pass.txt').read()
 keepalive = 600
 usepty = 0
 umask = None
