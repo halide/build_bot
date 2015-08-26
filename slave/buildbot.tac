@@ -29,7 +29,8 @@ except ImportError:
 
 buildmaster_host = '104.154.46.123'
 port = 9989
-slavename = 'linux-slave'
+slavename = os.environ['HALIDE_BB_SLAVE_NAME']
+assert slavename is not None
 passwd = open('halide_bb_pass.txt').read()
 keepalive = 600
 usepty = 0
