@@ -11,7 +11,7 @@ pip install buildbot
 To create and launch the build master:
 
 ```
-echo some_password > halide_bb_pass.txt
+echo some_password > master/halide_bb_pass.txt
 buildbot create-master master
 buildbot start master
 ```
@@ -19,7 +19,7 @@ buildbot start master
 To launch a build slave:
 
 ```
-echo the_same_password > halide_bb_pass.txt
+echo the_same_password > master/halide_bb_pass.txt
 buildslave start linux_slave
 ```
 
