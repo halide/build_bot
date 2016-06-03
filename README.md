@@ -12,7 +12,7 @@ To create and launch the build master:
 
 ```
 echo some_password > halide_bb_pass.txt
-buildbot creater-master master
+buildbot create-master master
 buildbot start master
 ```
 
