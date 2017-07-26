@@ -2,10 +2,16 @@ Buildbot configuration for Halide build bots
 
 To get started:
 
-Install python2.7, python2.7-pip, then run:
+Install python2.7, python-pip, then run:
 
 ```
-pip install buildbot
+sudo pip install virtualenv
+virtualenv python
+source python/bin/activate
+# for a master
+pip install "buildbot[bundle]"
+# or for a worker
+pip install "buildbot-worker"
 ```
 
 To create and launch the build master:
@@ -16,11 +22,11 @@ buildbot create-master master
 buildbot start master
 ```
 
-To launch a build slave:
+To launch a build worker:
 
 ```
-echo the_same_password > slave/halide_bb_pass.txt
-HALIDE_BB_SLAVE_NAME=<slave_name> buildslave start slave
+echo the_same_password > worker/halide_bb_pass.txt
+HALIDE_BB_WORKER_NAME=<worker_name> buildbot-worker start worker
 ```
 
 If you're making your own master, you'll may need to edit
