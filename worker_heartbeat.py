@@ -1,3 +1,21 @@
+# Usage: python worker_heartbeat.py
+
+# If you plan to close the shell you run this in, detach it with something like:
+# nohup python worker_heartbeat.py &
+
+# Run this script on any machine with a reliable uptime and internet
+# connection. Every 30 mins it connects to the buildbot REST endpoints
+# and checks for liveness of the buildbots. It then connects to the
+# gitter channel REST endpoint and tells us whether any are down.
+
+# If you prefer, you can remove the while loop and sleep call and run this as a cron
+# job.
+
+# In the future we may want to consider also reporting build breakages
+# on master to the gitter channel, post warnings when an individual
+# builder has a very long queue, etc. Buildbot exposes a whole lot of
+# stuff for us in convenient-to-consume json nuggets.
+
 import json, urllib, urllib2, time
 
 while True:    
