@@ -2,7 +2,7 @@ Buildbot configuration for Halide build bots
 
 To get started:
 
-Install python2.7, python-pip, then run:
+Install python3.x, python-pip, then run:
 
 ```
 sudo pip install virtualenv
