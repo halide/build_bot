@@ -6,7 +6,7 @@
 # prefix. The third line deletes them.
 
 for suffix in zip tgz; do
-    ls halide-*.${suffix} | sed "s/-[^-]*.${suffix}//" | sort | uniq | \
+    ls Halide-*.${suffix} | sed "s/-[^-]*.${suffix}//" | sort | uniq | \
         while read B; do ls -t ${B}*.${suffix} | tail -n +5; done | \
         while read F; do rm ${F}; done
 done
