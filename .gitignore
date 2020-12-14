@@ -1,3 +1,4 @@
+.idea/
 venv/
 halide_bb_pass.txt
 github_token.txt
