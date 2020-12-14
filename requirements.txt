@@ -1,0 +1,2 @@
+buildbot[bundle]==2.9.1
+buildbot-worker==2.9.1
