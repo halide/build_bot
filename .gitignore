@@ -1,1 +1,4 @@
 venv/
+halide_bb_pass.txt
+github_token.txt
+buildbot_www_pass.txt
