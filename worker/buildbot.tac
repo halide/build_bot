@@ -22,7 +22,7 @@ application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 
 buildmaster_host = os.environ.get('HALIDE_BB_MASTER_ADDR', '104.154.46.123')
 port = os.environ.get('HALIDE_BB_MASTER_PORT', 9990)
-workername = os.environ.get('HALIDE_BB_WORKER_NAME') or sys.exit('env var HALIDE_BB_WORKER_NAME must be non-empty')
+workername = os.environ.get('HALIDE_BB_WORKER_NAME')
 passwd = Path('halide_bb_pass.txt').read_text().strip()
 keepalive = 600
 umask = None
@@ -32,6 +32,9 @@ allow_shutdown = None
 maxretries = None
 use_tls = None
 delete_leftover_dirs = False
+
+if not workername:
+    sys.exit('Environment variable HALIDE_BB_WORKER_NAME must be non-empty')
 
 s = Worker(buildmaster_host, port, workername, passwd, basedir,
            keepalive, umask=umask, maxdelay=maxdelay,
