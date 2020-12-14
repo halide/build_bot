@@ -1,6 +1,7 @@
 import os
 import sys
 
+from pathlib import Path
 from buildbot_worker.bot import Worker
 from twisted.application import service
 from twisted.python.logfile import LogFile
@@ -22,8 +23,7 @@ application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 buildmaster_host = os.environ.get('HALIDE_BB_MASTER_ADDR', '104.154.46.123')
 port = os.environ.get('HALIDE_BB_MASTER_PORT', 9990)
 workername = os.environ.get('HALIDE_BB_WORKER_NAME') or sys.exit('env var HALIDE_BB_WORKER_NAME must be non-empty')
-with open('halide_bb_pass.txt') as pw_file:
-    passwd = pw_file.read().strip()
+passwd = Path('halide_bb_pass.txt').read_text().strip()
 keepalive = 600
 umask = None
 maxdelay = 300
