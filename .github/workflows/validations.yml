@@ -2,6 +2,7 @@ name: Buildbot Validations
 on: [ push, pull_request ]
 jobs:
   test:
+    name: Check buildbot config on Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
 
     strategy:
