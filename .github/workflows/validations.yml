@@ -1,18 +1,20 @@
 name: Buildbot Validations
-on:
-  push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+on: [ push, pull_request ]
 jobs:
   test:
+    name: Check buildbot config on Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [ 3.6, 3.8, 3.9 ]
+
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.6 (for compatibility)
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: 3.6
+          python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -21,5 +23,6 @@ jobs:
         run: |
           cd master
           echo "$GITHUB_TOKEN" > github_token.txt
-          cp github_token buildbot_www_pass.txt halide_bb_pass.txt
+          cp github_token.txt buildbot_www_pass.txt
+          cp github_token.txt halide_bb_pass.txt
           buildbot checkconfig
