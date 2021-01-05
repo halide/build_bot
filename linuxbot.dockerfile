@@ -2,7 +2,11 @@
 
 FROM buildbot/buildbot-worker:master
 
+
+USER root
+
 # TODO: cuda
+
 # gcc 9.3 is the default gcc on Ubuntu 20,
 # so we'll leave it at that. We need multilib
 # for our 32-bit x86 builds, so install the gcc9 versions of those too.
@@ -34,5 +38,6 @@ RUN \
         txrequests==0.9.6
 
 USER buildbot
+WORKDIR /buildbot
 
-CMD doxygen --version
+CMD ["doxygen", "--version"]
