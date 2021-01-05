@@ -5,6 +5,10 @@ FROM buildbot/buildbot-worker:master
 
 USER root
 
+ENV \
+    DEBIAN_FRONTEND="noninteractive" \
+    TZ="America/Los_Angeles"
+
 # TODO: cuda
 
 # gcc 9.3 is the default gcc on Ubuntu 20,
