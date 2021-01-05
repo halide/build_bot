@@ -5,6 +5,7 @@ FROM buildbot/buildbot-worker:master
 
 USER root
 
+# Do this to prevent Docker from stopping at prompting us for our time zone
 ENV \
     DEBIAN_FRONTEND="noninteractive" \
     TZ="America/Los_Angeles"
@@ -44,4 +45,4 @@ RUN \
 USER buildbot
 WORKDIR /buildbot
 
-CMD ["doxygen", "--version"]
+CMD ["buildbot-worker", "--version"]
