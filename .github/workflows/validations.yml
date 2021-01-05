@@ -22,5 +22,6 @@ jobs:
         run: |
           cd master
           echo "$GITHUB_TOKEN" > github_token.txt
-          cp github_token buildbot_www_pass.txt halide_bb_pass.txt
+          cp github_token.txt buildbot_www_pass.txt
+          cp github_token.txt halide_bb_pass.txt
           buildbot checkconfig
