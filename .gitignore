@@ -6,6 +6,7 @@ buildbot_www_pass.txt
 http.log
 twistd.hostname
 twistd.log
+twistd.log.*
 twistd.pid
 master/gitpoller-*
 master.cfg.sample
