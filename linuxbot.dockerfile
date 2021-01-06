@@ -47,5 +47,5 @@ WORKDIR /buildbot
 
 CMD ["pwd"]
 CMD ["ls", "-l"]
-CMD ["ls", "-l", "worker"]
+# CMD ["ls", "-l", "worker"]
 # CMD ["buildbot-worker", "start", "worker"]
