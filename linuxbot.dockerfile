@@ -45,4 +45,4 @@ RUN \
 USER buildbot
 WORKDIR /buildbot
 
-CMD ["buildbot-worker", "--version"]
+CMD ["buildbot-worker", "start", "worker"]
