@@ -45,4 +45,6 @@ RUN \
 USER buildbot
 WORKDIR /buildbot
 
+CMD ["ls", "-l"]
+CMD ["ls", "-l", "worker"]
 CMD ["buildbot-worker", "start", "worker"]
