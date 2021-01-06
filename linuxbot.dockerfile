@@ -1,7 +1,5 @@
-# from https://hub.docker.com/r/buildbot/buildbot-worker
-
+# Start with https://hub.docker.com/r/buildbot/buildbot-worker
 FROM buildbot/buildbot-worker:master
-
 
 USER root
 
@@ -45,7 +43,7 @@ RUN \
 USER buildbot
 WORKDIR /buildbot
 
-CMD ["pwd"]
-CMD ["ls", "-l"]
+CMD ["pwd && cat buildbot.tac"]
+#CMD ["ls", "-l"]
 # CMD ["ls", "-l", "worker"]
 # CMD ["buildbot-worker", "start", "worker"]
