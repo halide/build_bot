@@ -25,4 +25,5 @@ jobs:
           echo "$GITHUB_TOKEN" > github_token.txt
           cp github_token.txt buildbot_www_pass.txt
           cp github_token.txt halide_bb_pass.txt
+          cp github_token.txt webhook_token.txt
           buildbot checkconfig
