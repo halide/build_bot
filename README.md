@@ -47,7 +47,7 @@ a new master.
 3. Generate a secret to authenticate GitHub's webhook updates with the master. Call this `WEBHOOK_SECRET`.
 4. Choose a password for the `halidenightly` user to authenticate with the web interface. Call this `WWW_PASSWORD`.
 
-A convenient command for generating a secure secret is `ruby -rsecurerandom -e 'puts SecureRandom.hex(20)'`.
+A convenient command for generating a secure secret is `openssl rand -hex 20`.
 
 ## GitHub Configuration
 
