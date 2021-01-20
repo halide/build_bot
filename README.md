@@ -84,6 +84,23 @@ Finally, start the master!
 $ buildbot start master
 ```
 
+# Worker configuration
+
+## Worker dependencies
+
+(TODO: flesh this out)
+
+The macOS and Linux buildbots expect to have ccache installed. It is available through homebrew or APT. After
+installing, one should run the following commands:
+
+```console
+$ ccache --set-config=sloppiness=pch_defines,time_macros
+$ ccache -M 100G  # or smaller, depending on disk size
+```
+
+The first command allows CCache to work in the presence of precompiled headers. The second sets the cache size to
+something very large (100GB in this case).
+
 ## Starting a worker
 
 The master recognizes workers by their reported names, eg. `linux-worker-4` or `win-worker-1`. To launch the buildbot
