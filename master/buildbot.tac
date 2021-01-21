@@ -3,8 +3,8 @@ from pathlib import Path
 
 from buildbot.master import BuildMaster
 from twisted.application import service
-from twisted.python.logfile import LogFile
 from twisted.python.log import ILogObserver, FileLogObserver
+from twisted.python.logfile import LogFile
 
 basedir = str(Path(__file__).parent.resolve())
 rotateLength = 10000000
@@ -27,4 +27,3 @@ m = BuildMaster(basedir, configfile, umask)
 m.setServiceParent(application)
 m.log_rotation.rotateLength = rotateLength
 m.log_rotation.maxRotatedFiles = maxRotatedFiles
-
