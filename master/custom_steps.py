@@ -40,7 +40,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
         # Upload the XML log from the CTest run
         xml_results = yield self.runGlob(f'{self.workdir}/Testing/*/*.xml')
         if len(xml_results) != 1:
-            raise BuildStepFailed(repr(xml_results))
+            raise BuildStepFailed(f'Expected to find a single XML file. Got: {xml_results}')
 
         ctest_log = yield self.getFileContentFromWorker(xml_results[0], abandonOnFailure=True)
 
