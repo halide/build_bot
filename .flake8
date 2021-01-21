@@ -1,0 +1,10 @@
+[flake8]
+filename = *.py, *.cfg, *.tac
+exclude = venv, worker_heartbeat.py
+max-line-length = 120
+ignore =
+# Import shadowed by loop variable (os)
+    F402
+# Line break before/after binary operator
+    W503
+    W504
