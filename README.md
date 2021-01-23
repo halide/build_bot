@@ -78,6 +78,12 @@ Then, create a database for the master to save its work. This only needs to be d
 $ buildbot upgrade-master master
 ```
 
+Choose a directory to hold artifacts for package runs:
+
+```console
+$ export HALIDE_BB_MASTER_ARTIFACTS_DIR=/srv/www/buildbot/public_html/artifacts
+```
+
 Finally, start the master!
 
 ```console
