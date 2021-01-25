@@ -5,7 +5,7 @@
 # commit hash. The second line lists all but the newest of each build
 # prefix. The third line deletes them.
 
-for suffix in zip tgz; do
+for suffix in zip tgz tar.gz; do
     ls Halide-*.${suffix} | sed "s/-[^-]*.${suffix}//" | sort | uniq | \
         while read B; do ls -t ${B}*.${suffix} | tail -n +5; done | \
         while read F; do rm ${F}; done
