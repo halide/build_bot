@@ -26,14 +26,15 @@ class CleanOldFiles(BuildStep):
         stdio = yield self.addLog('stdio')
         status = SUCCESS
 
-        workdir = Path(self.workdir).resolve()
+        # Group files in workdir together using the supplied function.
         groups: Dict[str, List[Path]] = defaultdict(list)
-        props = self.getProperties()
-        for entry in workdir.iterdir():
-            gid = self.groupfn(props, entry)
+        for entry in Path(self.workdir).iterdir():
+            gid = self.groupfn(entry)
             if gid:
                 groups[gid].append(entry)
-        for _, group in groups.items():
+
+        # Delete all but the newest self.keep files with the same key.
+        for group in groups.values():
             group.sort(key=os.path.getmtime, reverse=True)
             for file in group[self.keep:]:
                 try:
