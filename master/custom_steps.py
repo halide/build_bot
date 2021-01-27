@@ -1,15 +1,94 @@
 import os
+import re
 import xml.etree.ElementTree as Xml
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
 
 from buildbot.process.buildstep import BuildStepFailed, BuildStep, ShellMixin
-from buildbot.process.results import SUCCESS, FAILURE
+from buildbot.process.results import SUCCESS, FAILURE, WARNINGS
 from buildbot.steps.worker import CompositeStepMixin
 from twisted.internet import defer
 
-__all__ = ['CleanOldFiles', 'CTest']
+__all__ = ['CleanOldFiles', 'CTest', 'SetPropertiesFromCMakeCache']
+
+
+class SetPropertiesFromCMakeCache(CompositeStepMixin, BuildStep):
+    name = 'set-properties-from-cmake-cache'
+
+    renderables = ['props']
+
+    _cache_re = re.compile(
+        r'''
+        ^(?!//|\#)    # Ignore comment lines.
+        ([^:=]+?)     # Get the variable name,
+        (-ADVANCED)?  # which might be marked as advanced,
+        :(BOOL|FILEPATH|INTERNAL|PATH|STATIC|STRING|TYPE|UNINITIALIZED) 
+                      # and will have a type.
+        =(.*)$        # The value extends through the end of the line.
+        ''',
+        re.VERBOSE)
+
+    def __init__(self, *, props=None, normalize_bools=False, expand_lists=False, **kwargs):
+        super().__init__(**kwargs)
+        self.props = props or []
+        self.normalize_bools = normalize_bools
+        self.expand_lists = expand_lists
+
+    @defer.inlineCallbacks
+    def run(self):
+        if not self.props:
+            return SUCCESS
+
+        log = yield self.addLog('props')
+
+        cache = yield self.getFileContentFromWorker(f'{self.workdir}/CMakeCache.txt', abandonOnFailure=True)
+        cache = self._parse_cache(cache)
+
+        to_find = set(self.props)
+        found = to_find & cache.keys()
+        not_found = to_find - cache.keys()
+
+        for key in found:
+            log.addStdout(f'{key}={cache[key]}\n')
+            self.setProperty(key, cache[key], 'CMakeCache')
+
+        for key in not_found:
+            log.addStderr(f'Cache entry not found: {key}\n')
+            self.setProperty(key, '', 'CMakeCache')
+
+        yield log.finish()
+        return WARNINGS if not_found else SUCCESS
+
+    def _parse_cache(self, cache: str):
+        result = {}
+        for entry in cache.splitlines():
+            match = self._cache_re.match(entry)
+            if match:
+                key, is_advanced, ty, value = match.groups()
+                if ty == 'BOOL' and self.normalize_bools:
+                    value = self._normalize_bools(value)
+                if self.expand_lists:
+                    value = self._expand_lists(value)
+                result[key] = value
+        return result
+
+    @staticmethod
+    def _expand_lists(value: str):
+        if ';' in value:
+            return value.split(';')
+        return value
+
+    @staticmethod
+    def _normalize_bools(value: str):
+        value = value.upper().strip()
+        if value.endswith('-NOTFOUND'):
+            return '0'
+        if value in {'1', 'ON', 'YES', 'TRUE', 'Y'}:
+            return '1'
+        if value in {'0', 'OFF', 'NO', 'FALSE', 'N', 'IGNORE', 'NOTFOUND'}:
+            return '0'
+        raise ValueError(f'Invalid CMake bool "{value}"')
 
 
 class CleanOldFiles(BuildStep):
