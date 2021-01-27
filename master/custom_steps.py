@@ -18,13 +18,16 @@ class SetPropertiesFromCMakeCache(CompositeStepMixin, BuildStep):
 
     renderables = ['props']
 
+    # Parsing with regex is safe because the CMakeCache.txt format
+    # hasn't changed since 2006, according to `git blame`. Caveat:
+    # they have backwards compatibility code for parsing entries with
+    # quoted names and missing types. We don't bother with that here.
     _cache_re = re.compile(
         r'''
         ^(?!//|\#)    # Ignore comment lines.
         ([^:=]+?)     # Get the variable name,
         (-ADVANCED)?  # which might be marked as advanced,
-        :(BOOL|FILEPATH|INTERNAL|PATH|STATIC|STRING|TYPE|UNINITIALIZED)
-                      # and will have a type.
+        :([^=]*)      # and will have a type.
         =(.*)$        # The value extends through the end of the line.
         ''',
         re.VERBOSE)
