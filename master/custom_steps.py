@@ -23,7 +23,7 @@ class SetPropertiesFromCMakeCache(CompositeStepMixin, BuildStep):
         ^(?!//|\#)    # Ignore comment lines.
         ([^:=]+?)     # Get the variable name,
         (-ADVANCED)?  # which might be marked as advanced,
-        :(BOOL|FILEPATH|INTERNAL|PATH|STATIC|STRING|TYPE|UNINITIALIZED) 
+        :(BOOL|FILEPATH|INTERNAL|PATH|STATIC|STRING|TYPE|UNINITIALIZED)
                       # and will have a type.
         =(.*)$        # The value extends through the end of the line.
         ''',
