@@ -1,10 +1,51 @@
+import os
 import xml.etree.ElementTree as Xml
+from collections import defaultdict
+from pathlib import Path
+from typing import Dict, List
 
 from buildbot.process.buildstep import BuildStepFailed, BuildStep, ShellMixin
+from buildbot.process.results import SUCCESS, FAILURE
 from buildbot.steps.worker import CompositeStepMixin
 from twisted.internet import defer
 
-__all__ = ['CTest']
+__all__ = ['CleanOldFiles', 'CTest']
+
+
+class CleanOldFiles(BuildStep):
+    name = 'clean-old'
+
+    def __init__(self, *, groupfn, workdir, keep=1, **kwargs):
+        super().__init__(**kwargs)
+        self.groupfn = groupfn
+        self.workdir = workdir
+        self.keep = keep
+
+    @defer.inlineCallbacks
+    def run(self):
+        stdio = yield self.addLog('stdio')
+        status = SUCCESS
+
+        # Group files in workdir together using the supplied function.
+        groups: Dict[str, List[Path]] = defaultdict(list)
+        for entry in Path(self.workdir).iterdir():
+            gid = self.groupfn(entry)
+            if gid:
+                groups[gid].append(entry)
+
+        # Delete all but the newest self.keep files with the same key.
+        for group in groups.values():
+            group.sort(key=os.path.getmtime, reverse=True)
+            for file in group[self.keep:]:
+                try:
+                    file.unlink()
+                    stdio.addStdout(f'Removed: {file.resolve()}\n')
+                except (FileNotFoundError, OSError) as e:
+                    stdio.addStderr(f'Could not delete {file.resolve()}: {e}\n')
+                    status = FAILURE
+
+        yield stdio.finish()
+        return status
 
 
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
