@@ -94,10 +94,23 @@ $ buildbot start master
 
 ## Worker dependencies
 
-(TODO: flesh this out)
+### Windows
 
-The macOS and Linux buildbots expect to have ccache installed. It is available through homebrew or APT. After
-installing, one should run the following commands:
+TODO: vcpkg?
+
+### Ubuntu
+
+TODO: What is the apt package list to install?
+
+### macOS
+
+Use homebrew to install other dependencies. You want at least:
+
+```console
+$ brew install ccache libpng libjpeg cmake ninja
+```
+
+For macOS and Linux, once ccache is installed, it's helpful to configure it like so:
 
 ```console
 $ ccache --set-config=sloppiness=pch_defines,time_macros
