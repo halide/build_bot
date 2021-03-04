@@ -107,7 +107,7 @@ TODO: What is the apt package list to install?
 Use homebrew to install other dependencies. You want at least:
 
 ```console
-$ brew install ccache libpng libjpeg cmake ninja
+$ brew install ccache libpng libjpeg cmake ninja doxygen
 ```
 
 For macOS and Linux, once ccache is installed, it's helpful to configure it like so:
