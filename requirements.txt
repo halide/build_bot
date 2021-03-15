@@ -1,4 +1,4 @@
-buildbot[bundle]~=2.10.0
+buildbot[bundle]==2.10.2
 buildbot-worker~=2.10.0
 txrequests==0.9.6
 Twisted~=20.3.0
