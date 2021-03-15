@@ -1,5 +1,5 @@
 buildbot[bundle]~=2.10.0
 buildbot-worker~=2.10.0
 txrequests==0.9.6
-Twisted~=20.3.0
+Twisted~=21.2.0
 pywin32==300; sys_platform == 'win32'
