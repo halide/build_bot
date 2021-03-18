@@ -1,7 +1,10 @@
-buildbot[bundle]~=2.10.0
-buildbot-worker~=2.10.0
-txrequests==0.9.6
-Twisted~=20.3.0
-# Pin sqlalchemy to avoid missing symbol errors
-sqlalchemy==1.3.23
+# Buildbot core
+buildbot[bundle]~=3.0
+buildbot-worker~=3.0
+txrequests
+
+# Version 3.4+ requires a Rust compiler (!?) to be installed on the host system
+cryptography<3.4
+
+# Platform-specific requirements
 pywin32==300; sys_platform == 'win32'
