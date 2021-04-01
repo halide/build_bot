@@ -1,6 +1,6 @@
 # Buildbot core
-buildbot[bundle]~=3.0
-buildbot-worker~=3.0
+buildbot[bundle]~=2.10.0
+buildbot-worker~=2.10.0
 txrequests
 
 Twisted~=20.3.0
