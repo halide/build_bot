@@ -3,6 +3,8 @@ buildbot[bundle]~=2.10.0
 buildbot-worker~=2.10.0
 txrequests
 
+Twisted~=20.3.0
+
 # Twisted==21.2.0
 # SQLAlchemy==1.3.24
 
