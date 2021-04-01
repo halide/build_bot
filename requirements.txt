@@ -6,7 +6,7 @@ txrequests
 Twisted~=20.3.0
 
 # Version 3.4+ requires a Rust compiler (!?) to be installed on the host system
-# cryptography<3.4
+cryptography<3.4
 
 # Platform-specific requirements
 pywin32==300; sys_platform == 'win32'
