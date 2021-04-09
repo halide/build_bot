@@ -1,6 +1,6 @@
 # Buildbot core
-buildbot[bundle]~=3.0
-buildbot-worker~=3.0
+buildbot[bundle]~=3.1
+buildbot-worker~=3.1
 txrequests
 
 # Version 3.4+ requires a Rust compiler (!?) to be installed on the host system
