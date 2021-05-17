@@ -138,7 +138,8 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
         kwargs['command'] = [
             'ctest',
             '--build-config', build_config,
-            *(['--parallel', str(jobs)] if jobs else []),
+            # Note, jobs may be a renderable, don't explicitly convert to str
+            *(['--parallel', jobs] if jobs else []),
             *(['--tests-regex', '|'.join(tests)] if tests else []),
             *(['--exclude-regex', '|'.join(exclude_tests)] if exclude_tests else []),
             *(['--label-regex', '|'.join(labels)] if labels else []),
