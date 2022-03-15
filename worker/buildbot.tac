@@ -20,10 +20,11 @@ logfile = LogFile.fromFullPath(
     maxRotatedFiles=maxRotatedFiles)
 application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 
-# Old location
+# Old locations
 # buildmaster_host = os.environ.get('HALIDE_BB_MASTER_ADDR', '104.154.46.123')
+# buildmaster_host = os.environ.get('HALIDE_BB_MASTER_ADDR', '67.169.120.127')
 
-buildmaster_host = os.environ.get('HALIDE_BB_MASTER_ADDR', '67.169.120.127')
+buildmaster_host = os.environ.get('HALIDE_BB_MASTER_ADDR', '142.254.86.114')
 port = os.environ.get('HALIDE_BB_MASTER_PORT', 9990)
 workername = os.environ.get('HALIDE_BB_WORKER_NAME')
 passwd = Path('halide_bb_pass.txt').read_text().strip()
