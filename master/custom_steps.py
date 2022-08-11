@@ -133,11 +133,10 @@ class CleanOldFiles(BuildStep):
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
     name = 'ctest'
 
-    def __init__(self, *, build_config, jobs=None, tests=None, exclude_tests=None, labels=None, exclude_labels=None,
+    def __init__(self, *, build_config, preset=None, jobs=None, tests=None, exclude_tests=None, labels=None, exclude_labels=None,
                  **kwargs):
         kwargs['command'] = [
             'ctest',
-            '--build-config', build_config,
             # Note, jobs may be a renderable, don't explicitly convert to str
             *(['--parallel', jobs] if jobs else []),
             *(['--tests-regex', '|'.join(tests)] if tests else []),
@@ -148,6 +147,11 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             '--test-action', 'Test',
             '--no-compress-output'
         ]
+        assert not (build_config and preset), "You may pass either build_config or preset but not both"
+        if build_config:
+            kwargs['command'] += ['--build-config', build_config]
+        if preset:
+            kwargs['command'] += ['--preset', preset]
 
         kwargs = self.setupShellMixin(kwargs)
         super().__init__(**kwargs)
