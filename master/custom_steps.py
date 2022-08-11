@@ -133,8 +133,8 @@ class CleanOldFiles(BuildStep):
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
     name = 'ctest'
 
-    def __init__(self, *, build_config, preset=None, jobs=None, tests=None, exclude_tests=None, labels=None, exclude_labels=None,
-                 **kwargs):
+    def __init__(self, *, build_config, preset=None, jobs=None, tests=None, exclude_tests=None,
+                 labels=None, exclude_labels=None, **kwargs):
         kwargs['command'] = [
             'ctest',
             # Note, jobs may be a renderable, don't explicitly convert to str
