@@ -133,7 +133,7 @@ class CleanOldFiles(BuildStep):
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
     name = 'ctest'
 
-    def __init__(self, *, build_config, preset=None, jobs=None, tests=None, exclude_tests=None,
+    def __init__(self, *, build_config=None, preset=None, jobs=None, tests=None, exclude_tests=None,
                  labels=None, exclude_labels=None, **kwargs):
         kwargs['command'] = [
             'ctest',
@@ -147,7 +147,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             '--test-action', 'Test',
             '--no-compress-output'
         ]
-        assert not (build_config and preset), "You may pass either build_config or preset but not both"
+        assert (build_config is None) ^ (preset is None), "You must pass either build_config or preset, but not both"
         if build_config:
             kwargs['command'] += ['--build-config', build_config]
         if preset:
