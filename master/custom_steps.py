@@ -134,7 +134,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
     name = 'ctest'
 
     def __init__(self, *, build_config=None, preset=None, jobs=None, tests=None, exclude_tests=None,
-                 labels=None, exclude_labels=None, **kwargs):
+                 labels=None, exclude_labels=None, test_dir=None, **kwargs):
         kwargs['command'] = [
             'ctest',
             # Note, jobs may be a renderable, don't explicitly convert to str
@@ -143,6 +143,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             *(['--exclude-regex', '|'.join(exclude_tests)] if exclude_tests else []),
             *(['--label-regex', '|'.join(labels)] if labels else []),
             *(['--label-exclude', '|'.join(exclude_labels)] if exclude_labels else []),
+            *(['--test-dir', '|'.join(test_dir)] if test_dir else []),
             '--output-on-failure',
             '--test-action', 'Test',
             '--no-compress-output'
