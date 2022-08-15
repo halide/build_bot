@@ -143,7 +143,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             *(['--exclude-regex', '|'.join(exclude_tests)] if exclude_tests else []),
             *(['--label-regex', '|'.join(labels)] if labels else []),
             *(['--label-exclude', '|'.join(exclude_labels)] if exclude_labels else []),
-            *(['--test-dir', '|'.join(test_dir)] if test_dir else []),
+            *(['--test-dir', test_dir] if test_dir else []),
             '--output-on-failure',
             '--test-action', 'Test',
             '--no-compress-output'
