@@ -133,21 +133,26 @@ class CleanOldFiles(BuildStep):
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
     name = 'ctest'
 
-    def __init__(self, *, build_config, jobs=None, tests=None, exclude_tests=None, labels=None, exclude_labels=None,
-                 **kwargs):
+    def __init__(self, *, build_config=None, preset=None, jobs=None, tests=None, exclude_tests=None,
+                 labels=None, exclude_labels=None, test_dir=None, **kwargs):
         kwargs['command'] = [
             'ctest',
-            '--build-config', build_config,
             # Note, jobs may be a renderable, don't explicitly convert to str
             *(['--parallel', jobs] if jobs else []),
             *(['--tests-regex', '|'.join(tests)] if tests else []),
             *(['--exclude-regex', '|'.join(exclude_tests)] if exclude_tests else []),
             *(['--label-regex', '|'.join(labels)] if labels else []),
             *(['--label-exclude', '|'.join(exclude_labels)] if exclude_labels else []),
+            *(['--test-dir', test_dir] if test_dir else []),
             '--output-on-failure',
             '--test-action', 'Test',
             '--no-compress-output'
         ]
+        assert (build_config is None) ^ (preset is None), "You must pass either build_config or preset, but not both"
+        if build_config:
+            kwargs['command'] += ['--build-config', build_config]
+        if preset:
+            kwargs['command'] += ['--preset', preset]
 
         kwargs = self.setupShellMixin(kwargs)
         super().__init__(**kwargs)
