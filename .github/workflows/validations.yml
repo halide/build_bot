@@ -3,16 +3,17 @@ on: [ push, pull_request ]
 jobs:
   test:
     name: Check buildbot config on Python ${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    # TODO: should be ubuntu-latest, but actions/setup-python doesn't work with ubuntu 22 just yet
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
         python-version: [ 3.6, 3.8, 3.9 ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4.3.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies

@@ -8,12 +8,13 @@ on:
 jobs:
   lint:
     name: flake8
-    runs-on: ubuntu-latest
+    # TODO: should be ubuntu-latest, but actions/setup-python doesn't work with ubuntu 22 just yet
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4.3.0
         with:
-          python-version: 3.6
+          python-version: 3.8
       - name: Set up flake8 annotations
         uses: rbialon/flake8-annotations@v1
       - name: Run flake8
