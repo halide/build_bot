@@ -10,7 +10,6 @@ from buildbot.process.results import SUCCESS, FAILURE, WARNINGS
 from buildbot.steps.transfer import FileUpload
 from buildbot.steps.worker import CompositeStepMixin
 from twisted.internet import defer
-from twisted.python import log
 
 __all__ = ['CleanOldFiles', 'CTest', 'FileUploadIfNotExist', 'SetPropertiesFromCMakeCache']
 
