@@ -7,8 +7,10 @@ from typing import Dict, List
 
 from buildbot.process.buildstep import BuildStepFailed, BuildStep, ShellMixin
 from buildbot.process.results import SUCCESS, FAILURE, WARNINGS
+from buildbot.steps.transfer import FileUpload
 from buildbot.steps.worker import CompositeStepMixin
 from twisted.internet import defer
+from twisted.python import log
 
 __all__ = ['CleanOldFiles', 'CTest', 'SetPropertiesFromCMakeCache']
 
@@ -128,6 +130,23 @@ class CleanOldFiles(BuildStep):
 
         yield stdio.finish()
         return status
+
+
+# Like FileUpload, but if the dest file already exists,
+# just log that to stdio and do nothing. Useful when the
+# filename contains (eg) a git commit or SHA that uniquely
+# identifies the file version.
+class FileUploadIfNotExist(FileUpload):
+    name = 'file-upload-if-not-exist'
+
+    @defer.inlineCallbacks
+    def run(self):
+        masterdest = os.path.expanduser(self.masterdest)
+        if os.path.isfile(masterdest) and os.path.getsize(masterdest) > 0:
+            log.msg(f"File {repr(masterdest)} already exists on dest, skipping upload!")
+            return SUCCESS
+
+        return super.run(self);
 
 
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
