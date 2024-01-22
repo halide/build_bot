@@ -146,7 +146,7 @@ class FileUploadIfNotExist(FileUpload):
             stdio.addStdout(f"File {repr(masterdest)} already exists on dest, skipping upload!")
             return SUCCESS
 
-        return super().run();
+        return super().run()
 
 
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
