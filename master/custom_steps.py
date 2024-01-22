@@ -143,9 +143,6 @@ class FileUploadIfNotExist(FileUpload):
     def run(self):
         masterdest = os.path.expanduser(self.masterdest)
         if os.path.isfile(masterdest) and os.path.getsize(masterdest) > 0:
-            # TODO: this doesn't show up in the worker status webpage --
-            # is there a way to send a status message to the worker log?
-            # (Using twisted.python.log() doesn't work either)
             stdio = yield self.addLog('stdio')
             stdio.addStdout(f"File {repr(masterdest)} already exists on dest, skipping upload!")
             return SUCCESS
