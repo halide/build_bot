@@ -139,6 +139,7 @@ class CleanOldFiles(BuildStep):
 class FileUploadIfNotExist(FileUpload):
     name = 'file-upload-if-not-exist'
 
+    @defer.inlineCallbacks
     def run(self):
         masterdest = os.path.expanduser(self.masterdest)
         if os.path.isfile(masterdest) and os.path.getsize(masterdest) > 0:
