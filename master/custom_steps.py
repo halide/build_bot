@@ -12,7 +12,7 @@ from buildbot.steps.worker import CompositeStepMixin
 from twisted.internet import defer
 from twisted.python import log
 
-__all__ = ['CleanOldFiles', 'CTest', 'SetPropertiesFromCMakeCache']
+__all__ = ['CleanOldFiles', 'CTest', 'FileUploadIfNotExist', 'SetPropertiesFromCMakeCache']
 
 
 class SetPropertiesFromCMakeCache(CompositeStepMixin, BuildStep):
