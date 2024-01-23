@@ -170,12 +170,16 @@ class FileUploadIfNotExist(FileUpload):
 
     @defer.inlineCallbacks
     def run(self):
+        stdio = yield self.addLog('stdio')
+
         masterdest = os.path.expanduser(self.masterdest)
         if os.path.isfile(masterdest) and os.path.getsize(masterdest) > 0:
-            stdio = yield self.addLog('stdio')
             stdio.addStdout(f"File {repr(masterdest)} already exists on dest, skipping upload!")
+            yield stdio.finish()
             return SUCCESS
 
+        stdio.addStdout(f"Preparing to upload to {repr(masterdest)}...")
+        yield stdio.finish()
         return super().run()
 
 
