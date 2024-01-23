@@ -152,7 +152,7 @@ class DeleteFilesInDir(BuildStep):
         for entry in Path(self.workdir).iterdir():
             if entry.is_file():
                 r = self.deletefn(entry)
-                stdio.addStdout(f'considering file: {entry.resolve()} -> {r}')
+                stdio.addStdout(f'considering file: {entry.resolve()} -> \n     {r}\n')
                 if r:
                     try:
                         entry.unlink()
