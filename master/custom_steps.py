@@ -138,7 +138,7 @@ class CleanOldFiles(BuildStep):
 class FileUploadIfNotExist(FileUpload):
     name = 'file-upload-if-not-exist'
 
-    def __init__(self, *, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # This is a hack to show some sort of progress-like output when uploading
         self.debug = True
