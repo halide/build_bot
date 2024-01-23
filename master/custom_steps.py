@@ -148,6 +148,7 @@ class FileUploadIfNotExist(FileUpload):
             yield stdio.finish()
             return SUCCESS
 
+        stdio.addStdout(f"Preparing to upload to {repr(masterdest)}...")
         yield stdio.finish()
         return super().run()
 
