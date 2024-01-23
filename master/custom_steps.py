@@ -168,6 +168,11 @@ class DeleteFilesInDir(BuildStep):
 class FileUploadIfNotExist(FileUpload):
     name = 'file-upload-if-not-exist'
 
+    def __init__(self, *, deletefn, workdir, **kwargs):
+        super().__init__(**kwargs)
+        # This is a hack to show some sort of progress-like output when uploading
+        self.debug = True
+
     @defer.inlineCallbacks
     def run(self):
         stdio = yield self.addLog('stdio')
