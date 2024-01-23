@@ -149,7 +149,9 @@ class DeleteFilesInDir(BuildStep):
         # Directories and other non-files are ignored.
         for entry in Path(self.workdir).iterdir():
             if entry.is_file():
-                if self.deletefn(entry):
+                r = self.deletefn(entry)
+                stdio.addStdout(f'considering file: {entry.resolve()} -> {r}')
+                if r:
                     try:
                         entry.unlink()
                         stdio.addStdout(f'Removed: {entry.resolve()}\n')
