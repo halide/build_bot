@@ -11,7 +11,7 @@ from buildbot.steps.transfer import FileUpload
 from buildbot.steps.worker import CompositeStepMixin
 from twisted.internet import defer
 
-__all__ = ['CleanOldFiles', 'CTest', 'FileUploadIfNotExist', 'SetPropertiesFromCMakeCache']
+__all__ = ['CleanOldFiles', 'CTest', 'DeleteFilesInDir', 'FileUploadIfNotExist', 'SetPropertiesFromCMakeCache']
 
 
 class SetPropertiesFromCMakeCache(CompositeStepMixin, BuildStep):
@@ -126,6 +126,36 @@ class CleanOldFiles(BuildStep):
                 except (FileNotFoundError, OSError) as e:
                     stdio.addStderr(f'Could not delete {file.resolve()}: {e}\n')
                     status = FAILURE
+
+        yield stdio.finish()
+        return status
+
+
+class DeleteFilesInDir(BuildStep):
+    name = 'delete-files-in-dir'
+
+    def __init__(self, *, groupfn, workdir, **kwargs):
+        super().__init__(**kwargs)
+        self.deletefn = deletefn
+        self.workdir = workdir
+
+    @defer.inlineCallbacks
+    def run(self):
+        stdio = yield self.addLog('stdio')
+        status = SUCCESS
+
+        # For all files in workdir, call deletefn with the Path object;
+        # if True is returned, the file will be deleted.
+        # Directories and other non-files are ignored.
+        for entry in Path(self.workdir).iterdir():
+            if entry.is_file():
+                if self.deletefn(entry):
+                    try:
+                        entry.unlink()
+                        stdio.addStdout(f'Removed: {entry.resolve()}\n')
+                    except (FileNotFoundError, OSError) as e:
+                        stdio.addStderr(f'Could not delete {entry.resolve()}: {e}\n')
+                        status = FAILURE
 
         yield stdio.finish()
         return status
