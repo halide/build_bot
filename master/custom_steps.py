@@ -134,6 +134,8 @@ class CleanOldFiles(BuildStep):
 class DeleteFilesInDir(BuildStep):
     name = 'delete-files-in-dir'
 
+    renderables = ['deletefn']
+
     def __init__(self, *, deletefn, workdir, **kwargs):
         super().__init__(**kwargs)
         self.deletefn = deletefn
