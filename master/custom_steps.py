@@ -161,6 +161,8 @@ class DeleteFilesInDir(BuildStep):
                     except (FileNotFoundError, OSError) as e:
                         stdio.addStderr(f'Could not delete {entry.resolve()}: {e}\n')
                         status = FAILURE
+                else:
+                    stdio.addStdout(f'WOULD NOT REMOVE: {entry.resolve()}\n')  # TODO
 
         yield stdio.finish()
         return status
