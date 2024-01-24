@@ -184,8 +184,8 @@ class FileUploadIfNotExist(FileUpload):
             yield stdio.finish()
             return SUCCESS
 
-        yield from super().run()
-        return SUCCESS
+        res = yield super().run()
+        return res
 
 
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
