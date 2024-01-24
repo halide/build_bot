@@ -157,7 +157,7 @@ class DeleteFilesInDir(BuildStep):
                     try:
                         # entry.unlink()
                         # stdio.addStdout(f'Removed: {entry.resolve()}\n')
-                        stdio.addStdout(f'WOULD REMOVE: {entry.resolve()}\n') #TODO
+                        stdio.addStdout(f'WOULD REMOVE: {entry.resolve()}\n')  # TODO
                     except (FileNotFoundError, OSError) as e:
                         stdio.addStderr(f'Could not delete {entry.resolve()}: {e}\n')
                         status = FAILURE
