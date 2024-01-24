@@ -11,7 +11,7 @@ from buildbot.steps.transfer import FileUpload
 from buildbot.steps.worker import CompositeStepMixin
 from twisted.internet import defer
 
-__all__ = ['CleanOldFiles', 'CTest', 'DeleteFilesInDir', 'FileUploadIfNotExist', 'SetPropertiesFromCMakeCache']
+__all__ = ['CleanOldFiles', 'CTest', 'DeleteMatchingFilesInDir', 'FileUploadIfNotExist', 'SetPropertiesFromCMakeCache']
 
 
 class SetPropertiesFromCMakeCache(CompositeStepMixin, BuildStep):
@@ -131,38 +131,45 @@ class CleanOldFiles(BuildStep):
         return status
 
 
-class DeleteFilesInDir(BuildStep):
-    name = 'delete-files-in-dir'
+# Delete all files in workdir that match must_match_re but do not match must_not_match_re.
+# If must_not_match_re is None, delete all files that match must_match_re.
+# Note that the regexps are compared against the (leaf) name, not the full pathname.
+class DeleteMatchingFilesInDir(BuildStep):
+    name = 'delete-matching-files-in-dir'
 
-    renderables = ['deletefn']
-
-    def __init__(self, *, deletefn, workdir, **kwargs):
+    def __init__(self, *, workdir, must_match_re, must_not_match_re=None, **kwargs):
         super().__init__(**kwargs)
-        self.deletefn = deletefn
         self.workdir = workdir
+        self.must_match_re = must_match_re
+        self.must_not_match_re = must_not_match_re
 
     @defer.inlineCallbacks
     def run(self):
         stdio = yield self.addLog('stdio')
         status = SUCCESS
+        stdio.addStdout(f'self.must_match_re: {self.must_match_re}\n')
+        stdio.addStdout(f'self.must_not_match_re: {self.must_not_match_re}\n')
 
-        # For all files in workdir, call deletefn with the Path object;
-        # if True is returned, the file will be deleted.
-        # Directories and other non-files are ignored.
+        match = re.match(r'^(.*)-[a-f0-9]+\.(tar\.gz|tgz|zip)', path.name)
+        return match.group(1) if match else None
+
         for entry in Path(self.workdir).iterdir():
-            if entry.is_file():
-                r = yield self.deletefn(entry)
-                stdio.addStdout(f'considering file: {entry.resolve()} -> \n     {r}\n')
-                if r:
-                    try:
-                        # entry.unlink()
-                        # stdio.addStdout(f'Removed: {entry.resolve()}\n')
-                        stdio.addStdout(f'WOULD REMOVE: {entry.resolve()}\n')  # TODO
-                    except (FileNotFoundError, OSError) as e:
-                        stdio.addStderr(f'Could not delete {entry.resolve()}: {e}\n')
-                        status = FAILURE
-                else:
-                    stdio.addStdout(f'WOULD NOT REMOVE: {entry.resolve()}\n')  # TODO
+            if not entry.is_file():
+                continue
+            stdio.addStdout(f'considering file: {entry.resolve()} -> \n     {r}\n')
+            if not re.match(self.must_match_re, entry.name):
+                stdio.addStdout(f'must_match_re fails: {entry.resolve()}\n')
+                continue
+            if self.must_not_match_re and not re.match(self.must_not_match_re, entry.name):
+                stdio.addStdout(f'must_not_match_re fails: {entry.resolve()}\n')
+                continue
+            try:
+                # entry.unlink()
+                # stdio.addStdout(f'Removed: {entry.resolve()}\n')
+                stdio.addStdout(f'WOULD REMOVE: {entry.resolve()}\n')  # TODO
+            except (FileNotFoundError, OSError) as e:
+                stdio.addStderr(f'Could not delete {entry.resolve()}: {e}\n')
+                status = FAILURE
 
         yield stdio.finish()
         return status
