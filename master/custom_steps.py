@@ -141,15 +141,12 @@ class FileUploadIfNotExist(FileUpload):
     def run(self):
         masterdest = os.path.expanduser(self.masterdest)
         if os.path.isfile(masterdest) and os.path.getsize(masterdest) > 0:
-            # TODO: this requires @defer.inlineCallbacks, but adding that
-            # will make the non-skip-upload path fail because we have no callbacks.
-            # How to resolve? Not sure. Oh well.
-            #
-            # stdio.addStdout(f"File {repr(masterdest)} already exists on dest, skipping upload!")
-            # yield stdio.finish()
+            stdio = yield self.addLog('stdio')
+            stdio.addStdout(f"File {repr(masterdest)} already exists on dest, skipping upload!")
+            yield stdio.finish()
             return SUCCESS
 
-        return super().run()
+        yield from super().run()
 
 
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
