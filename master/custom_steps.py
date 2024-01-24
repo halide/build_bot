@@ -150,13 +150,10 @@ class DeleteMatchingFilesInDir(BuildStep):
         stdio.addStdout(f'self.must_match_re: {self.must_match_re}\n')
         stdio.addStdout(f'self.must_not_match_re: {self.must_not_match_re}\n')
 
-        match = re.match(r'^(.*)-[a-f0-9]+\.(tar\.gz|tgz|zip)', path.name)
-        return match.group(1) if match else None
-
         for entry in Path(self.workdir).iterdir():
             if not entry.is_file():
                 continue
-            stdio.addStdout(f'considering file: {entry.resolve()} -> \n     {r}\n')
+            stdio.addStdout(f'considering file: {entry.resolve()}\n')
             if not re.match(self.must_match_re, entry.name):
                 stdio.addStdout(f'must_match_re fails: {entry.resolve()}\n')
                 continue
