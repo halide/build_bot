@@ -149,23 +149,17 @@ class DeleteMatchingFilesInDir(BuildStep):
     def run(self):
         stdio = yield self.addLog('stdio')
         status = SUCCESS
-        stdio.addStdout(f'self.must_match_re: {self.must_match_re}\n')
-        stdio.addStdout(f'self.must_not_match_re: {self.must_not_match_re}\n')
 
         for entry in Path(self.workdir).iterdir():
             if not entry.is_file():
                 continue
-            # stdio.addStdout(f'considering file: {entry.resolve()}\n')
             if not re.match(self.must_match_re, entry.name):
-                stdio.addStdout(f'IGNORE: {entry.resolve()}\n')
                 continue
             if self.must_not_match_re and re.match(self.must_not_match_re, entry.name):
-                stdio.addStdout(f'WOULD NOT REMOVE: {entry.resolve()}\n')
                 continue
             try:
-                # entry.unlink()
-                # stdio.addStdout(f'Removed: {entry.resolve()}\n')
-                stdio.addStdout(f'WOULD REMOVE: {entry.resolve()}\n')  # TODO
+                entry.unlink()
+                stdio.addStdout(f'Removed: {entry.resolve()}\n')
             except (FileNotFoundError, OSError) as e:
                 stdio.addStderr(f'Could not delete {entry.resolve()}: {e}\n')
                 status = FAILURE
