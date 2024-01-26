@@ -137,6 +137,8 @@ class CleanOldFiles(BuildStep):
 class DeleteMatchingFilesInDir(BuildStep):
     name = 'delete-matching-files-in-dir'
 
+    renderables = ['must_match_re', 'must_not_match_re']
+
     def __init__(self, *, workdir, must_match_re, must_not_match_re=None, **kwargs):
         super().__init__(**kwargs)
         self.workdir = workdir
