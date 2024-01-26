@@ -155,11 +155,11 @@ class DeleteMatchingFilesInDir(BuildStep):
         for entry in Path(self.workdir).iterdir():
             if not entry.is_file():
                 continue
-            stdio.addStdout(f'considering file: {entry.resolve()}\n')
+            # stdio.addStdout(f'considering file: {entry.resolve()}\n')
             if not re.match(self.must_match_re, entry.name):
-                stdio.addStdout(f'must_match_re fails: {entry.resolve()}\n')
+                # stdio.addStdout(f'must_match_re fails: {entry.resolve()}\n')
                 continue
-            if self.must_not_match_re and not re.match(self.must_not_match_re, entry.name):
+            if self.must_not_match_re and re.match(self.must_not_match_re, entry.name):
                 stdio.addStdout(f'must_not_match_re fails: {entry.resolve()}\n')
                 continue
             try:
