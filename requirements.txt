@@ -3,8 +3,7 @@ buildbot[bundle]~=3.1
 buildbot-worker~=3.1
 txrequests
 
-# Version 3.4+ requires a Rust compiler (!?) to be installed on the host system
-cryptography<3.4
+cryptography==43.0.0
 
 # Platform-specific requirements
 pywin32==301; sys_platform == 'win32'
