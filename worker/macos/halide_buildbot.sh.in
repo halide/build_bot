@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+cd @BUILDBOT_ROOT@
+source venv/bin/activate
+
+buildbot-worker start worker
