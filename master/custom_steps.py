@@ -11,7 +11,7 @@ from buildbot.steps.transfer import FileUpload
 from buildbot.steps.worker import CompositeStepMixin
 from twisted.internet import defer
 
-__all__ = ['CleanOldFiles', 'CTest', 'FileUploadIfNotExist', 'SetPropertiesFromCMakeCache']
+__all__ = ['CleanOldFiles', 'CTest', 'DeleteMatchingFilesInDir', 'FileUploadIfNotExist', 'SetPropertiesFromCMakeCache']
 
 
 class SetPropertiesFromCMakeCache(CompositeStepMixin, BuildStep):
@@ -126,6 +126,43 @@ class CleanOldFiles(BuildStep):
                 except (FileNotFoundError, OSError) as e:
                     stdio.addStderr(f'Could not delete {file.resolve()}: {e}\n')
                     status = FAILURE
+
+        yield stdio.finish()
+        return status
+
+
+# Delete all files in workdir that match must_match_re but do not match must_not_match_re.
+# If must_not_match_re is None, delete all files that match must_match_re.
+# Note that the regexps are compared against the (leaf) name, not the full pathname.
+class DeleteMatchingFilesInDir(BuildStep):
+    name = 'delete-matching-files-in-dir'
+
+    renderables = ['must_match_re', 'must_not_match_re']
+
+    def __init__(self, *, workdir, must_match_re, must_not_match_re=None, **kwargs):
+        super().__init__(**kwargs)
+        self.workdir = workdir
+        self.must_match_re = must_match_re
+        self.must_not_match_re = must_not_match_re
+
+    @defer.inlineCallbacks
+    def run(self):
+        stdio = yield self.addLog('stdio')
+        status = SUCCESS
+
+        for entry in Path(self.workdir).iterdir():
+            if not entry.is_file():
+                continue
+            if not re.match(self.must_match_re, entry.name):
+                continue
+            if self.must_not_match_re and re.match(self.must_not_match_re, entry.name):
+                continue
+            try:
+                entry.unlink()
+                stdio.addStdout(f'Removed: {entry.resolve()}\n')
+            except (FileNotFoundError, OSError) as e:
+                stdio.addStderr(f'Could not delete {entry.resolve()}: {e}\n')
+                status = FAILURE
 
         yield stdio.finish()
         return status
