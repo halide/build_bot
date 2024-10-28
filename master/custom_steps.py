@@ -166,7 +166,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             *(['--label-exclude', '|'.join(exclude_labels)] if exclude_labels else []),
             *(['--test-dir', test_dir] if test_dir else []),
             # We always want output from performance tests
-            *(['--verbose'] if 'performance' in labels else []),
+            *(['--verbose'] if labels and 'performance' in labels else []),
             '--output-on-failure',
             '--test-action', 'Test',
             '--no-compress-output'
