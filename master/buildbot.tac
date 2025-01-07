@@ -14,9 +14,9 @@ configfile = 'master.cfg'
 # Default umask for server
 umask = None
 
-logfile = LogFile.fromFullPath(os.path.join(basedir, "twistd.log"),
-                               rotateLength=rotateLength,
-                               maxRotatedFiles=maxRotatedFiles)
+logfile = LogFile.fromFullPath(
+    os.path.join(basedir, "twistd.log"), rotateLength=rotateLength, maxRotatedFiles=maxRotatedFiles
+)
 
 # note: this line is matched against to check that this is a buildmaster
 # directory; do not edit it.

@@ -16,8 +16,8 @@ maxRotatedFiles = 10
 application = service.Application('buildbot-worker')
 
 logfile = LogFile.fromFullPath(
-    os.path.join(basedir, "twistd.log"), rotateLength=rotateLength,
-    maxRotatedFiles=maxRotatedFiles)
+    os.path.join(basedir, "twistd.log"), rotateLength=rotateLength, maxRotatedFiles=maxRotatedFiles
+)
 application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 
 # Old locations
@@ -43,9 +43,19 @@ delete_leftover_dirs = False
 if not workername:
     sys.exit('Environment variable HALIDE_BB_WORKER_NAME must be non-empty')
 
-s = Worker(buildmaster_host, port, workername, passwd, basedir,
-           keepalive, umask=umask, maxdelay=maxdelay,
-           numcpus=numcpus, allow_shutdown=allow_shutdown,
-           maxRetries=maxretries, useTls=use_tls,
-           delete_leftover_dirs=delete_leftover_dirs)
+s = Worker(
+    buildmaster_host,
+    port,
+    workername,
+    passwd,
+    basedir,
+    keepalive,
+    umask=umask,
+    maxdelay=maxdelay,
+    numcpus=numcpus,
+    allow_shutdown=allow_shutdown,
+    maxRetries=maxretries,
+    useTls=use_tls,
+    delete_leftover_dirs=delete_leftover_dirs,
+)
 s.setServiceParent(application)

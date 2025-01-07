@@ -1,27 +1,36 @@
 name: Buildbot Validations
-on: [ push, pull_request ]
+on:
+  push:
+    paths:
+      - "**.py"
+      - "**.cfg"
+      - "**.tac"
 jobs:
   test:
     name: Check buildbot config on Python ${{ matrix.python-version }}
-    # TODO: should be ubuntu-latest, but actions/setup-python doesn't work with ubuntu 22 just yet
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        python-version: [ 3.8, 3.9, "3.10", 3.11 ]
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.3.0
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install importlib
-          python -m pip install importlib.metadata
+          python -m pip install -U pip setuptools wheel 
           pip install -r requirements.txt
+
       - name: Check config
         run: |
           cd master
