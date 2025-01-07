@@ -31,7 +31,8 @@ class SetPropertiesFromCMakeCache(CompositeStepMixin, BuildStep):
         :([^=]*)      # and will have a type.
         =(.*)$        # The value extends through the end of the line.
         ''',
-        re.VERBOSE)
+        re.VERBOSE,
+    )
 
     def __init__(self, *, props=None, normalize_bools=False, expand_lists=False, **kwargs):
         super().__init__(**kwargs)
@@ -119,7 +120,7 @@ class CleanOldFiles(BuildStep):
         # Delete all but the newest self.keep files with the same key.
         for group in groups.values():
             group.sort(key=os.path.getmtime, reverse=True)
-            for file in group[self.keep:]:
+            for file in group[self.keep :]:
                 try:
                     file.unlink()
                     stdio.addStdout(f'Removed: {file.resolve()}\n')
@@ -154,8 +155,19 @@ class FileUploadIfNotExist(FileUpload):
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
     name = 'ctest'
 
-    def __init__(self, *, build_config=None, preset=None, jobs=None, tests=None, exclude_tests=None,
-                 labels=None, exclude_labels=None, test_dir=None, **kwargs):
+    def __init__(
+        self,
+        *,
+        build_config=None,
+        preset=None,
+        jobs=None,
+        tests=None,
+        exclude_tests=None,
+        labels=None,
+        exclude_labels=None,
+        test_dir=None,
+        **kwargs,
+    ):
         kwargs['command'] = [
             'ctest',
             # Note, jobs may be a renderable, don't explicitly convert to str
@@ -168,8 +180,9 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             # We always want output from performance tests
             *(['--verbose'] if labels and 'performance' in labels else []),
             '--output-on-failure',
-            '--test-action', 'Test',
-            '--no-compress-output'
+            '--test-action',
+            'Test',
+            '--no-compress-output',
         ]
         assert (build_config is None) ^ (preset is None), "You must pass either build_config or preset, but not both"
         if build_config:
@@ -201,11 +214,13 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
 
         for test in root.findall(".//Test[@Status='failed']"):
             log = yield self.addLog(test.findtext('Name'))
-            self.write_xml(test,
-                           ("./Results/NamedMeasurement[@name='Environment']/Value", log.addHeader),
-                           ("./Results/NamedMeasurement[@name='Command Line']/Value", log.addHeader),
-                           ("./Results/Measurement/Value", log.addStdout),
-                           ("./Results/NamedMeasurement[@name='Fail Reason']/Value", log.addStderr))
+            self.write_xml(
+                test,
+                ("./Results/NamedMeasurement[@name='Environment']/Value", log.addHeader),
+                ("./Results/NamedMeasurement[@name='Command Line']/Value", log.addHeader),
+                ("./Results/Measurement/Value", log.addStdout),
+                ("./Results/NamedMeasurement[@name='Fail Reason']/Value", log.addStderr),
+            )
             yield log.finish()
 
         skipped = root.findall(".//Test[@Status='notrun']")
@@ -213,11 +228,13 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             log = yield self.addLog('skipped')
             for test in skipped:
                 log.addStdout(f'{test.findtext("Name")}\n')
-                self.write_xml(test,
-                               ("./Results/NamedMeasurement[@name='Environment']/Value", log.addHeader),
-                               ("./Results/NamedMeasurement[@name='Command Line']/Value", log.addHeader),
-                               ("./Results/Measurement/Value", log.addStdout),
-                               indent=2)
+                self.write_xml(
+                    test,
+                    ("./Results/NamedMeasurement[@name='Environment']/Value", log.addHeader),
+                    ("./Results/NamedMeasurement[@name='Command Line']/Value", log.addHeader),
+                    ("./Results/Measurement/Value", log.addStdout),
+                    indent=2,
+                )
                 log.addStdout('\n')
             yield log.finish()
 
