@@ -1,10 +1,5 @@
 name: Python Linter
-on:
-  push:
-    paths:
-      - "**.py"
-      - "**.cfg"
-      - "**.tac"
+on: push
 jobs:
   ruff:
     runs-on: ubuntu-latest
