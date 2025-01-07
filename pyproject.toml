@@ -1,0 +1,14 @@
+[project]
+requires-python = ">=3.8"
+
+[tool.ruff]
+line-length = 120
+extend-include = ["*.tac", "*.cfg"]
+
+[tool.ruff.lint]
+ignore = [
+    "F402", ## Import shadowed by loop variable (os)
+]
+
+[tool.ruff.format]
+quote-style = "preserve"
