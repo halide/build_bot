@@ -9,6 +9,3 @@ extend-include = ["*.tac", "*.cfg"]
 ignore = [
     "F402", ## Import shadowed by loop variable (os)
 ]
-
-[tool.ruff.format]
-quote-style = "preserve"
