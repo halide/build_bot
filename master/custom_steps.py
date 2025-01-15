@@ -227,7 +227,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
         if skipped:
             log = yield self.addLog("skipped")
             for test in skipped:
-                log.addStdout(f'{test.findtext("Name")}\n')
+                log.addStdout(f"{test.findtext('Name')}\n")
                 self.write_xml(
                     test,
                     ("./Results/NamedMeasurement[@name='Environment']/Value", log.addHeader),
