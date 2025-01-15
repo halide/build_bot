@@ -10,4 +10,4 @@ cryptography==43.0.0
 pywin32==301; sys_platform == 'win32'
 
 # Development tools
-ruff==0.8.6
+ruff==0.9.1
