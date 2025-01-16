@@ -20,7 +20,7 @@ logfile = LogFile.fromFullPath(
 
 # note: this line is matched against to check that this is a buildmaster
 # directory; do not edit it.
-application = service.Application("buildmaster")
+application = service.Application('buildmaster')  # fmt: skip
 application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 
 m = BuildMaster(basedir, configfile, umask)
