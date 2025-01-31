@@ -13,7 +13,7 @@ maxRotatedFiles = 10
 
 # note: this line is matched against to check that this is a worker
 # directory; do not edit it.
-application = service.Application("buildbot-worker")
+application = service.Application('buildbot-worker')  # fmt: skip
 
 logfile = LogFile.fromFullPath(
     os.path.join(basedir, "twistd.log"), rotateLength=rotateLength, maxRotatedFiles=maxRotatedFiles
