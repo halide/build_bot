@@ -1,10 +1,5 @@
 name: Buildbot Validations
-on:
-  push:
-    paths:
-      - "**.py"
-      - "**.cfg"
-      - "**.tac"
+on: push
 jobs:
   test:
     name: Check buildbot config on Python ${{ matrix.python-version }}
@@ -17,19 +12,20 @@ jobs:
           - "3.9"
           - "3.10"
           - "3.11"
+          - "3.12"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4.3.0
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
+      - uses: astral-sh/setup-uv@v6
+
       - name: Install dependencies
-        run: |
-          python -m pip install -U pip setuptools wheel 
-          pip install -r requirements.txt
+        run: uv sync --extra master --no-dev
 
       - name: Check config
         run: |
@@ -38,4 +34,4 @@ jobs:
           cp github_token.txt buildbot_www_pass.txt
           cp github_token.txt halide_bb_pass.txt
           cp github_token.txt webhook_token.txt
-          buildbot checkconfig
+          uv run buildbot checkconfig
