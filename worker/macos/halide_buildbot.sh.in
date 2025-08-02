@@ -3,6 +3,4 @@
 set -eo pipefail
 
 cd @BUILDBOT_ROOT@
-source venv/bin/activate
-
-buildbot-worker start worker
+uv run --extra worker --no-dev buildbot-worker start worker

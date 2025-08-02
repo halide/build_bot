@@ -25,19 +25,12 @@ if [ -z "$HALIDE_BB_WORKER_NAME" ]; then
   exit 1
 fi
 
-create_venv () {
-  (
-    python3 -m venv .venv
-    source .venv/bin/activate
-    python3 -m pip install -U pip "setuptools[core]" wheel
-    python3 -m pip install -r requirements-worker.txt
-  )
-}
+if ! command -v uv > /dev/null 2>&1; then
+  echo "uv is not installed: cannot continue"
+  exit 1
+fi
 
 if [ "$(uname)" == "Darwin" ]; then
-  echo "Creating virtual environment"
-  test -d .venv || create_venv
-
   echo "Installing worker launch scripts"
   cmake -P worker/macos/install.cmake
 
