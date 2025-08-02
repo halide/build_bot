@@ -7,4 +7,5 @@
 # Note: execute via `source activate_windows_venv.sh`, not by running directly.
 #
 . venv/Scripts/activate
-export PATH=$(echo $PATH | sed 's,^\([C-Gc-g]\):\\,/\1/,g' | sed 's,:\([C-Gc-g]\):\\,/\1/,g')
+PATH=$(echo "$PATH" | sed 's,^\([C-Gc-g]\):\\,/\1/,g' | sed 's,:\([C-Gc-g]\):\\,/\1/,g')
+export PATH

@@ -27,16 +27,16 @@ fi
 
 create_venv () {
   (
-    python3 -m venv venv
-    source venv/bin/activate
-    python3 -m pip install -U pip setuptools[core] wheel
-    python3 -m pip install -r requirements.txt
+    python3 -m venv .venv
+    source .venv/bin/activate
+    python3 -m pip install -U pip "setuptools[core]" wheel
+    python3 -m pip install -r requirements-worker.txt
   )
 }
 
 if [ "$(uname)" == "Darwin" ]; then
   echo "Creating virtual environment"
-  test -d venv || create_venv
+  test -d .venv || create_venv
 
   echo "Installing worker launch scripts"
   cmake -P worker/macos/install.cmake
