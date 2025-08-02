@@ -32,7 +32,7 @@ fi
 
 if [ "$(uname)" == "Darwin" ]; then
   echo "Installing worker launch scripts"
-  cmake -P worker/macos/install.cmake
+  uv run --extra worker --no-dev cmake -P worker/macos/install.cmake
 
   echo "Starting buildbot"
   ~/.local/bin/halide_buildbot.sh
