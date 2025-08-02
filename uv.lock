@@ -171,6 +171,18 @@ wheels = [
 ]
 
 [[package]]
+name = "buildbot-www"
+version = "4.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "buildbot" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a0/41/30b0abb4574d2b77e48d95dcf848b4fb24fb8b611a3b5d0544027cd0b4b2/buildbot_www-4.3.0.tar.gz", hash = "sha256:9a7e79f856f6714dab341e4dc2de359d65e37197e0774ee28d80009d99e79f02", size = 430203, upload-time = "2025-05-12T21:41:47.066Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/92/39/3a23edb9aef533b57e374fb1e468686c62f6e44d8828ac6827b9f7eb8f66/buildbot_www-4.3.0-py3-none-any.whl", hash = "sha256:cbce52516632d6df52457dad2671a66a509b5fb1476b3ab587769554aa8e8e6b", size = 430562, upload-time = "2025-05-12T21:41:36.106Z" },
+]
+
+[[package]]
 name = "certifi"
 version = "2025.7.14"
 source = { registry = "https://pypi.org/simple" }
@@ -588,6 +600,7 @@ dependencies = [
 [package.optional-dependencies]
 master = [
     { name = "buildbot" },
+    { name = "buildbot-www" },
     { name = "treq" },
 ]
 worker = [
@@ -605,6 +618,7 @@ dev = [
 requires-dist = [
     { name = "buildbot", marker = "extra == 'master'", specifier = "~=3.1" },
     { name = "buildbot-worker", marker = "extra == 'worker'", specifier = "~=3.1" },
+    { name = "buildbot-www", marker = "extra == 'master'" },
     { name = "cmake", marker = "extra == 'worker'", specifier = ">=3.28" },
     { name = "ninja", marker = "extra == 'worker'", specifier = ">=1.11" },
     { name = "treq", marker = "extra == 'master'", specifier = ">=25.5" },

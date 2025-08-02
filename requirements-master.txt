@@ -33,6 +33,12 @@ automat==25.4.16 ; python_full_version >= '3.9' \
 buildbot==3.11.9 \
     --hash=sha256:accf61f253e7b610ff712a50a646b65708b4ccf5e3d4278daf4d1f51a83c6eac \
     --hash=sha256:f9d0758e99878c6d3bcf2c6990a28d88504785a1d6605d0329887e23f2319776
+    # via
+    #   buildbot-www
+    #   halide-build-bot
+buildbot-www==4.3.0 \
+    --hash=sha256:9a7e79f856f6714dab341e4dc2de359d65e37197e0774ee28d80009d99e79f02 \
+    --hash=sha256:cbce52516632d6df52457dad2671a66a509b5fb1476b3ab587769554aa8e8e6b
     # via halide-build-bot
 certifi==2025.7.14 \
     --hash=sha256:6b31f564a415d79ee77df69d757bb49a5bb53bd9f756cbbe24394ffd6fc1f4b2 \
