@@ -34,7 +34,7 @@ jobs:
         working-directory: master
 
   worker-deps:
-    name: Check worker dependencies install on ${{ runner.os }}-${{ runner.arch }}
+    name: Check worker dependencies install on ${{ matrix.runner }}
     runs-on: ${{ matrix.runner }}
 
     strategy:
