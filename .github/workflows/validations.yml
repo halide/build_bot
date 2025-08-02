@@ -24,14 +24,11 @@ jobs:
 
       - uses: astral-sh/setup-uv@v6
 
-      - name: Install dependencies
-        run: uv sync --extra master --no-dev
-
       - name: Check config
         run: |
-          cd master
           echo "$GITHUB_TOKEN" > github_token.txt
           cp github_token.txt buildbot_www_pass.txt
           cp github_token.txt halide_bb_pass.txt
           cp github_token.txt webhook_token.txt
-          uv run buildbot checkconfig
+          uv run --extra master --no-dev buildbot checkconfig
+        working-directory: master
