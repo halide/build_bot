@@ -1,7 +1,7 @@
 name: Buildbot Validations
 on: push
 jobs:
-  test:
+  config-ok:
     name: Check buildbot config on Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
 
@@ -32,3 +32,24 @@ jobs:
           cp github_token.txt webhook_token.txt
           uv run --extra master --no-dev buildbot checkconfig
         working-directory: master
+
+  worker-deps:
+    name: Check worker dependencies install on ${{ matrix.runner }}
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      matrix:
+        runner:
+          - macos-latest
+          - macos-13
+          - ubuntu-22.04-arm
+          - ubuntu-latest
+          - windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - name: Check pip install -r requirements-worker.txt
+        run: |
+          python3 -m pip install -U pip "setuptools[core]" wheel
+          python3 -m pip install -r requirements-worker.txt
