@@ -30,9 +30,15 @@ Write-Host "Disabled Windows Error Reporting crash dialogs (Current User)"
 ##
 # Install system dependencies
 
-Write-Host "Installing system dependencies..."
+Write-Host "Installing winget-managed dependencies..."
 winget import winget-packages.json --accept-package-agreements --accept-source-agreements
 winget install -e --id Microsoft.VisualStudio.2022.Community --override "--passive --config $PSScriptRoot\.vsconfig"
+
+##
+# Install uv
+
+Write-Host "Installing uv..."
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 ##
 # Install vcpkg and its dependencies
