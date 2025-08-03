@@ -77,5 +77,5 @@ Write-Host "Installing vcpkg packages..."
 ##
 # All done!
 
-$setupPath = Resolve-Path "$PSScriptRoot\..\..\setup.ps1"
-Write-Host "Finished! Restart PowerShell and run $setupPath"
+$workerScript = Resolve-Path "$PSScriptRoot\..\..\worker.ps1"
+Write-Host "Finished! Restart PowerShell and run $workerScript"

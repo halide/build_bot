@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -eo pipefail
-
-cd @BUILDBOT_ROOT@
-uv run --package worker buildbot-worker start worker

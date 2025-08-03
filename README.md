@@ -80,7 +80,7 @@ Then, create a database for the master to save its work. This only needs to be
 done once.
 
 ```console
-$ uv run --package master buildbot upgrade-master master
+$ ./master.sh upgrade-master
 ```
 
 Choose a directory to hold artifacts for package runs:
@@ -92,7 +92,7 @@ $ export HALIDE_BB_MASTER_ARTIFACTS_DIR=/srv/www/buildbot/public_html/artifacts
 Finally, start the master!
 
 ```console
-$ uv run --package master buildbot start master
+$ ./master.sh start
 ```
 
 # Worker configuration
