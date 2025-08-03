@@ -3,28 +3,9 @@ name = "halide-build-bot"
 version = "0.1.0"
 requires-python = ">=3.10"
 
-# Dependencies that are used by both the master and the worker go here.
-dependencies = [
-    "twisted>=23.10"
-]
-
-[project.optional-dependencies]
-master = [
-    "buildbot~=3.1",
-    "buildbot-www",
-    "treq>=25.5", # required by GitHubStatusPush
-]
-worker = [
-    "buildbot-worker~=3.1",
-    "cmake>=3.28",
-    "ninja>=1.11",
-    "pywin32>=311 ; sys_platform == 'win32'", # Missing from buildbot-worker
-]
-
 [dependency-groups]
-# Dependencies that are only used while working on the master/worker code go here.
 dev = [
-    "ruff~=0.9"
+    "ruff~=0.9",
 ]
 
 [tool.ruff]
@@ -35,3 +16,6 @@ extend-include = ["*.tac", "*.cfg"]
 ignore = [
     "F402", ## Import shadowed by loop variable (os)
 ]
+
+[tool.uv.workspace]
+members = ["master", "worker"]

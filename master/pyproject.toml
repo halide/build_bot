@@ -1,0 +1,10 @@
+[project]
+name = "master"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "buildbot-www",
+    "buildbot~=3.1",
+    "treq>=25.5", # required by GitHubStatusPush
+    "twisted>=23.10",
+]

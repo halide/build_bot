@@ -3,4 +3,4 @@
 set -eo pipefail
 
 cd @BUILDBOT_ROOT@
-uv run --extra worker --no-dev buildbot-worker start worker
+uv run --package worker buildbot-worker start worker

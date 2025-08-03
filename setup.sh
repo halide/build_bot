@@ -22,8 +22,8 @@ fi
 
 if [ "$(uname)" == "Darwin" ]; then
   echo "Installing macOS startup launch scripts"
-  uv run --extra worker --no-dev cmake -P worker/macos/install.cmake
+  uv run --package worker cmake -P worker/macos/install.cmake
 fi
 
 echo "Launching (or restarting) buildbot worker"
-uv run --extra worker --no-dev buildbot-worker restart worker
+uv run --package worker buildbot-worker restart worker

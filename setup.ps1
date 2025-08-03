@@ -24,4 +24,4 @@ if (-not (Get-Command uv -ErrorAction SilentlyContinue))
 }
 
 Write-Host "Launching buildbot worker"
-& uv run --extra worker --no-dev buildbot-worker start worker
+& uv run --package worker buildbot-worker start worker

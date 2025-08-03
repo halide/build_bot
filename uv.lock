@@ -2,6 +2,13 @@ version = 1
 revision = 3
 requires-python = ">=3.10"
 
+[manifest]
+members = [
+    "halide-build-bot",
+    "master",
+    "worker",
+]
+
 [[package]]
 name = "alembic"
 version = "1.16.4"
@@ -106,11 +113,11 @@ wheels = [
 
 [[package]]
 name = "certifi"
-version = "2025.7.14"
+version = "2025.8.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b3/76/52c535bcebe74590f296d6c77c86dabf761c41980e1347a2422e4aa2ae41/certifi-2025.7.14.tar.gz", hash = "sha256:8ea99dbdfaaf2ba2f9bac77b9249ef62ec5218e7c2b2e903378ed5fccf765995", size = 163981, upload-time = "2025-07-14T03:29:28.449Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/dc/67/960ebe6bf230a96cda2e0abcf73af550ec4f090005363542f0765df162e0/certifi-2025.8.3.tar.gz", hash = "sha256:e564105f78ded564e3ae7c923924435e1daa7463faeab5bb932bc53ffae63407", size = 162386, upload-time = "2025-08-03T03:07:47.08Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4f/52/34c6cf5bb9285074dc3531c437b3919e825d976fde097a7a73f79e726d03/certifi-2025.7.14-py3-none-any.whl", hash = "sha256:6b31f564a415d79ee77df69d757bb49a5bb53bd9f756cbbe24394ffd6fc1f4b2", size = 162722, upload-time = "2025-07-14T03:29:26.863Z" },
+    { url = "https://files.pythonhosted.org/packages/e5/48/1549795ba7742c948d2ad169c1c8cdbae65bc450d6cd753d124b17c8cd32/certifi-2025.8.3-py3-none-any.whl", hash = "sha256:f6c12493cfb1b06ba2ff328595af9350c65d6644968e5d3a2ffd78699af217a5", size = 161216, upload-time = "2025-08-03T03:07:45.777Z" },
 ]
 
 [[package]]
@@ -381,22 +388,6 @@ wheels = [
 name = "halide-build-bot"
 version = "0.1.0"
 source = { virtual = "." }
-dependencies = [
-    { name = "twisted" },
-]
-
-[package.optional-dependencies]
-master = [
-    { name = "buildbot" },
-    { name = "buildbot-www" },
-    { name = "treq" },
-]
-worker = [
-    { name = "buildbot-worker" },
-    { name = "cmake" },
-    { name = "ninja" },
-    { name = "pywin32", marker = "sys_platform == 'win32'" },
-]
 
 [package.dev-dependencies]
 dev = [
@@ -404,17 +395,6 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "buildbot", marker = "extra == 'master'", specifier = "~=3.1" },
-    { name = "buildbot-worker", marker = "extra == 'worker'", specifier = "~=3.1" },
-    { name = "buildbot-www", marker = "extra == 'master'" },
-    { name = "cmake", marker = "extra == 'worker'", specifier = ">=3.28" },
-    { name = "ninja", marker = "extra == 'worker'", specifier = ">=1.11" },
-    { name = "pywin32", marker = "sys_platform == 'win32' and extra == 'worker'", specifier = ">=311" },
-    { name = "treq", marker = "extra == 'master'", specifier = ">=25.5" },
-    { name = "twisted", specifier = ">=23.10" },
-]
-provides-extras = ["master", "worker"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "ruff", specifier = "~=0.9" }]
@@ -542,6 +522,25 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/0d/80/0985960e4b89922cb5a0bac0ed39c5b96cbc1a536a99f30e8c220a996ed9/MarkupSafe-3.0.2-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:131a3c7689c85f5ad20f9f6fb1b866f402c445b220c19fe4308c0b147ccd2ad9", size = 24098, upload-time = "2024-10-18T15:21:40.813Z" },
     { url = "https://files.pythonhosted.org/packages/82/78/fedb03c7d5380df2427038ec8d973587e90561b2d90cd472ce9254cf348b/MarkupSafe-3.0.2-cp313-cp313t-win32.whl", hash = "sha256:ba8062ed2cf21c07a9e295d5b8a2a5ce678b913b45fdf68c32d95d6c1291e0b6", size = 15208, upload-time = "2024-10-18T15:21:41.814Z" },
     { url = "https://files.pythonhosted.org/packages/4f/65/6079a46068dfceaeabb5dcad6d674f5f5c61a6fa5673746f42a9f4c233b3/MarkupSafe-3.0.2-cp313-cp313t-win_amd64.whl", hash = "sha256:e444a31f8db13eb18ada366ab3cf45fd4b31e4db1236a4448f68778c1d1a5a2f", size = 15739, upload-time = "2024-10-18T15:21:42.784Z" },
+]
+
+[[package]]
+name = "master"
+version = "0.1.0"
+source = { virtual = "master" }
+dependencies = [
+    { name = "buildbot" },
+    { name = "buildbot-www" },
+    { name = "treq" },
+    { name = "twisted" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "buildbot", specifier = "~=3.1" },
+    { name = "buildbot-www" },
+    { name = "treq", specifier = ">=25.5" },
+    { name = "twisted", specifier = ">=23.10" },
 ]
 
 [[package]]
@@ -1006,6 +1005,27 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/15/22/9ee70a2574a4f4599c47dd506532914ce044817c7752a79b6a51286319bc/urllib3-2.5.0.tar.gz", hash = "sha256:3fc47733c7e419d4bc3f6b3dc2b4f890bb743906a30d56ba4a5bfa4bbff92760", size = 393185, upload-time = "2025-06-18T14:07:41.644Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a7/c2/fe1e52489ae3122415c51f387e221dd0773709bad6c6cdaa599e8a2c5185/urllib3-2.5.0-py3-none-any.whl", hash = "sha256:e6b01673c0fa6a13e374b50871808eb3bf7046c4b125b216f6bf1cc604cff0dc", size = 129795, upload-time = "2025-06-18T14:07:40.39Z" },
+]
+
+[[package]]
+name = "worker"
+version = "0.1.0"
+source = { virtual = "worker" }
+dependencies = [
+    { name = "buildbot-worker" },
+    { name = "cmake" },
+    { name = "ninja" },
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
+    { name = "twisted" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "buildbot-worker", specifier = "~=3.1" },
+    { name = "cmake", specifier = ">=3.28" },
+    { name = "ninja", specifier = ">=1.11" },
+    { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=311" },
+    { name = "twisted", specifier = ">=23.10" },
 ]
 
 [[package]]

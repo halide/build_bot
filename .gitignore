@@ -13,4 +13,6 @@ twistd.pid
 master/gitpoller-*
 master.cfg.sample
 state.sqlite
+state.sqlite-shm
+state.sqlite-wal
 worker/llvm*

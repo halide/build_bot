@@ -28,7 +28,7 @@ jobs:
           cp github_token.txt buildbot_www_pass.txt
           cp github_token.txt halide_bb_pass.txt
           cp github_token.txt webhook_token.txt
-          uv run --extra master --no-dev buildbot checkconfig
+          uv run --package master buildbot checkconfig
         working-directory: master
 
   worker-deps:
@@ -48,7 +48,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
       - uses: astral-sh/setup-uv@v6
-      - name: Check pip install -r requirements-worker.txt
-        run: |
-          uv venv
-          uv pip install -r requirements-worker.txt
+      - run: uv sync --package worker
