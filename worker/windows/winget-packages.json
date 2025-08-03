@@ -1,0 +1,46 @@
+{
+  "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
+  "Sources": [
+    {
+      "Packages": [
+        {
+          "PackageIdentifier": "DimitriVanHeesch.Doxygen",
+          "Version": "1.14.0"
+        },
+        {
+          "PackageIdentifier": "Git.Git",
+          "Version": "2.50.1"
+        },
+        {
+          "PackageIdentifier": "Google.Chrome"
+        },
+        {
+          "PackageIdentifier": "Google.ChromeRemoteDesktopHost"
+        },
+        {
+          "PackageIdentifier": "KhronosGroup.VulkanSDK",
+          "Version": "1.4.321.1"
+        },
+        {
+          "PackageIdentifier": "Nvidia.CUDA",
+          "Version": "12.9"
+        },
+        {
+          "PackageIdentifier": "Python.Launcher",
+          "Version": "3.13.5"
+        },
+        {
+          "PackageIdentifier": "Python.Python.3.11",
+          "Version": "3.11.9"
+        }
+      ],
+      "SourceDetails": {
+        "Argument": "https://cdn.winget.microsoft.com/cache",
+        "Identifier": "Microsoft.Winget.Source_8wekyb3d8bbwe",
+        "Name": "winget",
+        "Type": "Microsoft.PreIndexed.Package"
+      }
+    }
+  ],
+  "WinGetVersion": "1.11.400"
+}
