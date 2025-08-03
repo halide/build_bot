@@ -1,7 +1,7 @@
 [project]
 name = "halide-build-bot"
 version = "0.1.0"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 
 # Dependencies that are used by both the master and the worker go here.
 dependencies = [
