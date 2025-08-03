@@ -42,7 +42,7 @@ awk '{
     line = substr(line, 1, RSTART - 1) ENVIRON[placeholder] substr(line, RSTART + RLENGTH)
   }
   print line
-}' org.halide-lang.buildbot.plist.in > "${PLIST}"
+}' worker/macos/org.halide-lang.buildbot.plist.in > "${PLIST}"
 echo "Installed autostart config to ${PLIST}"
 
 ##
