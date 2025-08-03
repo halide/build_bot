@@ -32,6 +32,8 @@ ccache -M 20G
 ##
 # Install the autostart script
 
+PLIST="$(realpath ~/Library/LaunchAgents)/org.halide-lang.buildbot.plist"
+
 WORKER_SCRIPT="$(realpath "$BUILDBOT_ROOT/worker.sh")"
 export WORKER_SCRIPT
 
