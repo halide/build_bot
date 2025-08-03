@@ -7,7 +7,7 @@ fail () {
   exit 1
 }
 
-BUILDBOT_ROOT=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
+BUILDBOT_ROOT=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd)
 cd "$BUILDBOT_ROOT"
 
 ##
