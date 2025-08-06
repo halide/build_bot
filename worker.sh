@@ -28,10 +28,10 @@ fi
 ##
 # Launch the worker
 
-if [ -n "$XPC_SERVICE_NAME" ]; then
+if [ "$XPC_SERVICE_NAME" = "org.halide-lang.buildbot" ]; then
     # Running under launchd - use foreground mode
     uv run --package worker buildbot-worker restart --nodaemon worker
-els
+else
     echo "Launching (or restarting) buildbot worker"
     uv run --package worker buildbot-worker restart worker
 fi
