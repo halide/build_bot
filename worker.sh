@@ -29,9 +29,13 @@ fi
 # Launch the worker
 
 if [ "$XPC_SERVICE_NAME" = "org.halide-lang.buildbot" ]; then
-    # Running under launchd - use foreground mode
+    # Running under macOS launchd - use foreground mode
+    uv run --package worker buildbot-worker restart --nodaemon worker
+elif [ -n "$JOURNAL_STREAM" ]; then
+    # Running under Linux systemd - use foreground mode
     uv run --package worker buildbot-worker restart --nodaemon worker
 else
+    # Running manually - use daemon mode
     echo "Launching (or restarting) buildbot worker"
     uv run --package worker buildbot-worker restart worker
 fi

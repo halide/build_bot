@@ -1,0 +1,19 @@
+[Unit]
+Description=Halide Buildbot Worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=${USER}
+Group=${USER}
+WorkingDirectory=${BUILDBOT_ROOT}
+ExecStart=${WORKER_SCRIPT}
+Restart=always
+RestartSec=10
+Environment=HALIDE_BB_WORKER_NAME=${HALIDE_BB_WORKER_NAME}
+Environment=HOME=${HOME}
+Environment=PATH=${HOME}/.local/bin:/usr/local/cuda/bin:/snap/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+[Install]
+WantedBy=multi-user.target
