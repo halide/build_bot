@@ -12,6 +12,8 @@
         <dict>
             <key>HALIDE_BB_WORKER_NAME</key>
             <string>${HALIDE_BB_WORKER_NAME}</string>
+            <key>PATH</key>
+            <string>${LAUNCHD_PATH}</string>
         </dict>
     </dict>
 </plist>

@@ -42,6 +42,9 @@ if [ -z "$HALIDE_BB_WORKER_NAME" ]; then
 fi
 export HALIDE_BB_WORKER_NAME
 
+LAUNCHD_PATH="$(dirname "$(command -v uv)"):\$PATH"
+export LAUNCHD_PATH
+
 envsubst < worker/macos/org.halide-lang.buildbot.plist.in > "${PLIST}"
 
 plutil -lint "${PLIST}" || fail "Generated plist is invalid"
