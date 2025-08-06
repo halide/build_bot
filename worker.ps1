@@ -23,5 +23,16 @@ if (-not (Get-Command uv -ErrorAction SilentlyContinue))
     Fail "uv is not installed: cannot continue"
 }
 
-Write-Host "Launching buildbot worker"
-& uv run --package worker buildbot-worker start worker
+# Check if we're running from Task Scheduler (no interactive user session)
+$isTaskScheduler = [Environment]::UserInteractive -eq $false -or $env:SESSIONNAME -eq $null
+
+if ($isTaskScheduler)
+{
+    Write-Host "Launching buildbot worker (Task Scheduler mode)"
+    & uv run --package worker buildbot-worker start --nodaemon worker
+}
+else
+{
+    Write-Host "Launching buildbot worker"
+    & uv run --package worker buildbot-worker start worker
+}

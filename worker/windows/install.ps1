@@ -17,6 +17,17 @@ if (-not (Get-Command winget -ErrorAction SilentlyContinue))
 }
 
 ##
+# Check/set HALIDE_BB_WORKER_NAME
+
+if (-not $env:HALIDE_BB_WORKER_NAME)
+{
+    Fail "Environment variable HALIDE_BB_WORKER_NAME unset: cannot continue"
+}
+
+Write-Host "Setting HALIDE_BB_WORKER_NAME environment variable..."
+[Environment]::SetEnvironmentVariable("HALIDE_BB_WORKER_NAME", $env:HALIDE_BB_WORKER_NAME, "User")
+
+##
 # Set important registry settings
 
 $keyPath = "HKCU:\Software\Microsoft\Windows\Windows Error Reporting"
@@ -75,7 +86,34 @@ Write-Host "Installing vcpkg packages..."
 & "$vcpkg_root\vcpkg.exe" install libjpeg-turbo libpng zlib openblas --triplet x86-windows
 
 ##
-# All done!
+# Install the autostart task
 
 $workerScript = Resolve-Path "$PSScriptRoot\..\..\worker.ps1"
-Write-Host "Finished! Restart PowerShell and run $workerScript"
+
+# Create/update the scheduled task
+$taskName = "Halide Buildbot Worker"
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -File `"$workerScript`""
+$trigger = New-ScheduledTaskTrigger -AtLogOn
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RestartInterval (New-TimeSpan -Minutes 1) -RestartCount 3
+$principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive
+
+# Remove existing task if it exists
+$existingTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+if ($existingTask)
+{
+    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
+    Write-Host "Removed existing scheduled task"
+}
+
+# Register the new task
+Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings -Principal $principal | Out-Null
+Write-Host "Registered scheduled task '$taskName'"
+
+# Start the task immediately
+Start-ScheduledTask -TaskName $taskName
+Write-Host "Started buildbot worker task"
+
+##
+# All done!
+
+Write-Host "Finished! The buildbot worker is now running and will start automatically at login."
