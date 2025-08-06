@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# Early debug for launchd
-if [ "$XPC_SERVICE_NAME" = "org.halide-lang.buildbot" ]; then
-    echo "DEBUG: Script started, PATH=$PATH" >> /tmp/worker-debug.log 2>&1
-    echo "DEBUG: PWD=$PWD" >> /tmp/worker-debug.log 2>&1
-    echo "DEBUG: XPC_SERVICE_NAME=$XPC_SERVICE_NAME" >> /tmp/worker-debug.log 2>&1
-fi
-
 set -eo pipefail
 
 fail () {
