@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Early debug for launchd
 if [ "$XPC_SERVICE_NAME" = "org.halide-lang.buildbot" ]; then
