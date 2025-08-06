@@ -28,5 +28,10 @@ fi
 ##
 # Launch the worker
 
-echo "Launching (or restarting) buildbot worker"
-uv run --package worker buildbot-worker restart worker
+if [ -n "$XPC_SERVICE_NAME" ]; then
+    # Running under launchd - use foreground mode
+    uv run --package worker buildbot-worker restart --nodaemon worker
+els
+    echo "Launching (or restarting) buildbot worker"
+    uv run --package worker buildbot-worker restart worker
+fi
