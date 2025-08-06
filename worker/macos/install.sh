@@ -37,6 +37,11 @@ PLIST="$(realpath ~/Library/LaunchAgents)/org.halide-lang.buildbot.plist"
 WORKER_SCRIPT="$(realpath "$BUILDBOT_ROOT/worker.sh")"
 export WORKER_SCRIPT
 
+if [ -z "$HALIDE_BB_WORKER_NAME" ]; then
+  fail "Environment variable HALIDE_BB_WORKER_NAME unset: cannot continue"
+fi
+export HALIDE_BB_WORKER_NAME
+
 envsubst < worker/macos/org.halide-lang.buildbot.plist.in > "${PLIST}"
 
 plutil -lint "${PLIST}" || fail "Generated plist is invalid"

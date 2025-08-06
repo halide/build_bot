@@ -8,5 +8,10 @@
         <string>${WORKER_SCRIPT}</string>
         <key>RunAtLoad</key>
         <true/>
+        <key>EnvironmentVariables</key>
+        <dict>
+            <key>HALIDE_BB_WORKER_NAME</key>
+            <string>${HALIDE_BB_WORKER_NAME}</string>
+        </dict>
     </dict>
 </plist>
