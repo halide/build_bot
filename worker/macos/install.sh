@@ -21,7 +21,7 @@ fi
 # Install Homebrew dependencies
 
 brew update
-brew install ccache doxygen libjpeg libpng protobuf uv
+brew install ccache doxygen gettext libjpeg libpng protobuf uv
 
 ##
 # Configure ccache
@@ -37,17 +37,16 @@ PLIST="$(realpath ~/Library/LaunchAgents)/org.halide-lang.buildbot.plist"
 WORKER_SCRIPT="$(realpath "$BUILDBOT_ROOT/worker.sh")"
 export WORKER_SCRIPT
 
-awk '{
-  line = $0
-  while (match(line, /@[^@ \t\n\r]+@/)) {
-    placeholder = substr(line, RSTART + 1, RLENGTH - 2)
-    line = substr(line, 1, RSTART - 1) ENVIRON[placeholder] substr(line, RSTART + RLENGTH)
-  }
-  print line
-}' worker/macos/org.halide-lang.buildbot.plist.in > "${PLIST}"
-echo "Installed autostart config to ${PLIST}"
+envsubst < worker/macos/org.halide-lang.buildbot.plist.in > "${PLIST}"
+
+plutil -lint "${PLIST}" || fail "Generated plist is invalid"
+
+launchctl unload "${PLIST}" 2>/dev/null || true  # Remove if already loaded
+launchctl load "${PLIST}"
+
+echo "Installed and loaded autostart service"
 
 ##
 # Success!
 
-echo "Finished! Restart your shell and run $WORKER_SCRIPT"
+echo "Finished! The buildbot worker is now running and will start automatically on login."

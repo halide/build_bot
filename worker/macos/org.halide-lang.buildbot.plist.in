@@ -5,7 +5,7 @@
         <key>Label</key>
         <string>org.halide-lang.buildbot</string>
         <key>Program</key>
-        <string>@WORKER_SCRIPT@</string>
+        <string>${WORKER_SCRIPT}</string>
         <key>RunAtLoad</key>
         <true/>
     </dict>
