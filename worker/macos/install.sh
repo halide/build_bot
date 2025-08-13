@@ -54,8 +54,8 @@ fi
 export EMSDK
 
 # TODO: this should be managed in-repo
-HALIDE_NODE_JS_PATH="$(brew --prefix node@18)/bin/node"
-export HALIDE_NODE_JS_PATH
+NodeJS_ROOT="$(brew --prefix node@18)"
+export NodeJS_ROOT
 
 ##
 # Install the autostart script
