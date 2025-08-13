@@ -18,6 +18,10 @@
             <string>${HL_WEBGPU_NODE_BINDINGS}</string>
             <key>HL_WEBGPU_NATIVE_LIB</key>
             <string>${HL_WEBGPU_NATIVE_LIB}</string>
+            <key>EMSDK</key>
+            <string>${EMSDK}</string>
+            <key>HALIDE_NODE_JS_PATH</key>
+            <string>${HALIDE_NODE_JS_PATH}</string>
         </dict>
     </dict>
 </plist>
