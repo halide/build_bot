@@ -21,7 +21,7 @@ fi
 # Install Homebrew dependencies
 
 brew update
-brew install --quiet ccache doxygen gettext libjpeg libpng node@18 protobuf uv
+brew install --quiet ccache doxygen gettext libjpeg libpng node@18 pkg-config protobuf uv
 
 ##
 # Configure ccache
