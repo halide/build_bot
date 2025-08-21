@@ -180,6 +180,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             # We always want output from performance tests
             *(["--verbose"] if labels and "performance" in labels else []),
             "--output-on-failure",
+            "-DCTEST_CUSTOM_TEST_OUTPUT_TRUNCATION:STRING=head",
             "--test-action",
             "Test",
             "--no-compress-output",
