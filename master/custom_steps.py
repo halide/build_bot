@@ -166,6 +166,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
         labels=None,
         exclude_labels=None,
         test_dir=None,
+        verbose=False,
         **kwargs,
     ):
         kwargs["command"] = [
@@ -177,8 +178,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             *(["--label-regex", "|".join(labels)] if labels else []),
             *(["--label-exclude", "|".join(exclude_labels)] if exclude_labels else []),
             *(["--test-dir", test_dir] if test_dir else []),
-            # We always want output from performance tests
-            *(["--verbose"] if labels and "performance" in labels else []),
+            *(["--verbose"] if verbose else []),
             "--output-on-failure",
             "-DCTEST_CUSTOM_TEST_OUTPUT_TRUNCATION:STRING=head",
             "--test-action",
