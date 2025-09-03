@@ -167,6 +167,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
         exclude_labels=None,
         test_dir=None,
         verbose=False,
+        extra_flags=None,
         **kwargs,
     ):
         kwargs["command"] = [
@@ -179,6 +180,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             *(["--label-exclude", "|".join(exclude_labels)] if exclude_labels else []),
             *(["--test-dir", test_dir] if test_dir else []),
             *(["--verbose"] if verbose else []),
+            *(extra_flags if extra_flags else []),
             "--output-on-failure",
             "-DCTEST_CUSTOM_TEST_OUTPUT_TRUNCATION:STRING=head",
             "--test-action",
