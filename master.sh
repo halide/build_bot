@@ -2,12 +2,12 @@
 
 set -eo pipefail
 
-fail () {
+fail() {
   echo "$@"
   exit 1
 }
 
-BUILDBOT_ROOT=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
+BUILDBOT_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd "$BUILDBOT_ROOT"
 
 ##
@@ -27,23 +27,23 @@ fi
 ##
 # Check necessary files are present
 
-if [ ! -f master/github_token.txt ]; then
-  fail "Missing master/github_token.txt: cannot continue"
+if [ ! -s secrets/github_token.txt ]; then
+  fail "Missing or empty secrets/github_token.txt: cannot continue"
 fi
 
-if [ ! -f master/buildbot_www_pass.txt ]; then
-  fail "Missing master/buildbot_www_pass.txt: cannot continue"
+if [ ! -s secrets/buildbot_www_pass.txt ]; then
+  fail "Missing or empty secrets/buildbot_www_pass.txt: cannot continue"
 fi
 
-if [ ! -f master/halide_bb_pass.txt ]; then
-  fail "Missing master/halide_bb_pass.txt: cannot continue"
+if [ ! -s secrets/halide_bb_pass.txt ]; then
+  fail "Missing or empty secrets/halide_bb_pass.txt: cannot continue"
 fi
 
-if [ ! -f master/webhook_token.txt ]; then
-  fail "Missing master/webhook_token.txt: cannot continue"
+if [ ! -s secrets/webhook_token.txt ]; then
+  fail "Missing or empty secrets/webhook_token.txt: cannot continue"
 fi
 
-if ! command -v uv > /dev/null 2>&1; then
+if ! command -v uv >/dev/null 2>&1; then
   fail "uv is not installed: cannot continue"
 fi
 
