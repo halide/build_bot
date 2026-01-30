@@ -47,4 +47,10 @@ fi
 # Run the master
 
 echo "Running buildbot $command master"
+
+# Ensure the master is upgraded before starting
+if [[ "$command" == "start" ]]; then
+  "${run[@]}" upgrade-master master
+fi
+
 exec "${run[@]}" "$command" "$@" master
