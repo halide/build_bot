@@ -13,15 +13,15 @@ cd "$BUILDBOT_ROOT"
 ##
 # Determine the command to give to the master
 
-if [[ $# -eq 1 ]]; then
-  command="$1"
-elif [[ $# -gt 1 ]]; then
-  echo "Usage: $0 [command]" >&2
-  exit 1
-elif [[ -f master/twistd.pid ]]; then
-  command="reconfig"
-else
-  command="start"
+command="${1:-}"
+shift || true
+
+if [[ -z "$command" ]]; then
+  if [[ -f master/twistd.pid ]]; then
+    command="reconfig"
+  else
+    command="start"
+  fi
 fi
 
 ##
@@ -51,4 +51,4 @@ fi
 # Run the master
 
 echo "Running buildbot $command master"
-uv run --package master buildbot "$command" master
+uv run --package master buildbot "$command" "$@" master
