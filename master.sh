@@ -27,21 +27,12 @@ fi
 ##
 # Check necessary files are present
 
-if [ ! -s secrets/github_token.txt ]; then
-  fail "Missing or empty secrets/github_token.txt: cannot continue"
-fi
-
-if [ ! -s secrets/buildbot_www_pass.txt ]; then
-  fail "Missing or empty secrets/buildbot_www_pass.txt: cannot continue"
-fi
-
-if [ ! -s secrets/halide_bb_pass.txt ]; then
-  fail "Missing or empty secrets/halide_bb_pass.txt: cannot continue"
-fi
-
-if [ ! -s secrets/webhook_token.txt ]; then
-  fail "Missing or empty secrets/webhook_token.txt: cannot continue"
-fi
+secrets_dir="${HALIDE_BB_SECRETS_DIR:-secrets}"
+for secret in github_token buildbot_www_pass halide_bb_pass webhook_token; do
+  if [ ! -s "$secrets_dir/${secret}.txt" ]; then
+    fail "Missing or empty $secrets_dir/${secret}.txt: cannot continue"
+  fi
+done
 
 if ! command -v uv >/dev/null 2>&1; then
   fail "uv is not installed: cannot continue"
