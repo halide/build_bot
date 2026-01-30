@@ -8,7 +8,7 @@ services:
     volumes:
       - buildbot-db:/buildbot/master/db
       - buildbot-gitpoller:/buildbot/master/gitpoller-llvm-workdir
-      - ${HALIDE_BB_ARTIFACTS_DIR:-./data/artifacts}:/artifacts
+      - ${HALIDE_BB_MASTER_ARTIFACTS_DIR:-./data/artifacts}:/artifacts
     secrets:
       - github_token.txt
       - halide_bb_pass.txt
@@ -29,7 +29,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
-      - ${HALIDE_BB_ARTIFACTS_DIR:-./data/artifacts}:/artifacts:ro
+      - ${HALIDE_BB_MASTER_ARTIFACTS_DIR:-./data/artifacts}:/artifacts:ro
     restart: unless-stopped
 
 volumes:
