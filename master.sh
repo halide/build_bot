@@ -34,12 +34,17 @@ for secret in github_token buildbot_www_pass halide_bb_pass webhook_token; do
   fi
 done
 
-if ! command -v uv >/dev/null 2>&1; then
-  fail "uv is not installed: cannot continue"
+##
+# Resolve the buildbot command
+
+if command -v buildbot >/dev/null 2>&1; then
+  run=(buildbot)
+else
+  run=(uv run --package master buildbot)
 fi
 
 ##
 # Run the master
 
 echo "Running buildbot $command master"
-uv run --package master buildbot "$command" "$@" master
+exec "${run[@]}" "$command" "$@" master
