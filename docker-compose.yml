@@ -20,7 +20,6 @@ services:
     ports:
       - "9990:9990"
     volumes:
-      - buildbot-db:/buildbot/master/db
       - buildbot-gitpoller:/buildbot/master/gitpoller-llvm-workdir
       - ${HALIDE_BB_MASTER_ARTIFACTS_DIR:-./data/artifacts}:/artifacts
     secrets:
@@ -48,7 +47,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  buildbot-db:
   buildbot-gitpoller:
   caddy-data:
   caddy-config:
