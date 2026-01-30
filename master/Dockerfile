@@ -1,7 +1,7 @@
 # ── Builder stage ────────────────────────────────────────────────────────────
 FROM ghcr.io/astral-sh/uv:0.6-python3.12-bookworm-slim AS builder
 
-WORKDIR /app
+WORKDIR /buildbot
 
 COPY pyproject.toml uv.lock ./
 COPY master/pyproject.toml master/pyproject.toml
@@ -22,7 +22,7 @@ RUN apt-get update \
 RUN useradd --create-home --home-dir /buildbot buildbot
 
 # Copy virtual environment from builder
-COPY --from=builder /app/.venv /buildbot/.venv
+COPY --from=builder /buildbot/.venv /buildbot/.venv
 ENV PATH="/buildbot/.venv/bin:$PATH" \
     VIRTUAL_ENV="/buildbot/.venv"
 
