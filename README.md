@@ -70,10 +70,10 @@ the correct ones:
 First, write all the secrets to the corresponding files:
 
 ```console
-$ echo "$GITHUB_TOKEN" > master/github_token.txt
-$ echo "$WORKER_SECRET" > master/halide_bb_pass.txt
-$ echo "$WEBHOOK_SECRET" > master/webhook_token.txt
-$ echo "$WWW_PASSWORD" > master/buildbot_www_pass.txt
+$ echo "$GITHUB_TOKEN" > secrets/github_token.txt
+$ echo "$WORKER_SECRET" > secrets/halide_bb_pass.txt
+$ echo "$WEBHOOK_SECRET" > secrets/webhook_token.txt
+$ echo "$WWW_PASSWORD" > secrets/buildbot_www_pass.txt
 ```
 
 Then, create a database for the master to save its work. This only needs to be

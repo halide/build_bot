@@ -1,10 +1,7 @@
 .idea/
 venv/
 .venv/
-halide_bb_pass.txt
-github_token.txt
-buildbot_www_pass.txt
-webhook_token.txt
+secrets/*.txt
 http.log
 twistd.hostname
 twistd.log

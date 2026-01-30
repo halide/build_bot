@@ -24,12 +24,11 @@ jobs:
 
       - name: Check config
         run: |
-          echo "$GITHUB_TOKEN" > github_token.txt
-          cp github_token.txt buildbot_www_pass.txt
-          cp github_token.txt halide_bb_pass.txt
-          cp github_token.txt webhook_token.txt
-          uv run --package master buildbot checkconfig
-        working-directory: master
+          echo "$GITHUB_TOKEN" > secrets/github_token.txt
+          openssl rand -hex 20 > secrets/buildbot_www_pass.txt
+          openssl rand -hex 20 > secrets/halide_bb_pass.txt
+          openssl rand -hex 20 > secrets/webhook_token.txt
+          uv run --package master buildbot checkconfig master
 
   worker-deps:
     name: Check worker dependencies install on ${{ matrix.runner }}
