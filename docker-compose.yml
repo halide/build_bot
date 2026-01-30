@@ -1,0 +1,49 @@
+services:
+  buildbot:
+    build:
+      context: .
+      dockerfile: master/Dockerfile
+    ports:
+      - "9990:9990"
+    volumes:
+      - buildbot-db:/buildbot/master/db
+      - buildbot-gitpoller:/buildbot/master/gitpoller-llvm-workdir
+      - ${HALIDE_BB_ARTIFACTS_DIR:-./data/artifacts}:/artifacts
+    secrets:
+      - github_token.txt
+      - halide_bb_pass.txt
+      - webhook_token.txt
+      - buildbot_www_pass.txt
+    environment:
+      HALIDE_BB_MASTER_ARTIFACTS_DIR: /artifacts
+      HALIDE_BB_SECRETS_DIR: /run/secrets
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+      - ${HALIDE_BB_ARTIFACTS_DIR:-./data/artifacts}:/artifacts:ro
+    restart: unless-stopped
+
+volumes:
+  buildbot-db:
+  buildbot-gitpoller:
+  caddy-data:
+  caddy-config:
+
+secrets:
+  github_token.txt:
+    file: ./secrets/github_token.txt
+  halide_bb_pass.txt:
+    file: ./secrets/halide_bb_pass.txt
+  webhook_token.txt:
+    file: ./secrets/webhook_token.txt
+  buildbot_www_pass.txt:
+    file: ./secrets/buildbot_www_pass.txt

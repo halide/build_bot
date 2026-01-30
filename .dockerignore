@@ -1,0 +1,30 @@
+# Version control and IDE
+.git
+.github
+.idea
+
+# Python
+.venv
+__pycache__
+
+# Secrets (loaded via Docker secrets)
+secrets/
+
+# Runtime artifacts
+master/db/
+master/twistd.log
+master/twistd.log.*
+master/twistd.pid
+master/twistd.hostname
+master/http.log
+master/gitpoller-*
+
+# Worker platform dirs (keep worker/pyproject.toml for UV workspace)
+worker/macos
+worker/windows
+worker/buildbot.tac
+worker/llvm*
+
+# Misc
+.ruff_cache
+*.pyc
