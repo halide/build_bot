@@ -27,8 +27,8 @@ fi
 ##
 # Check necessary files are present
 
-secrets_dir="${HALIDE_BB_SECRETS_DIR:-secrets}"
-for secret in github_token buildbot_www_pass halide_bb_pass webhook_token; do
+secrets_dir="${HALIDE_BB_MASTER_SECRETS_DIR:-secrets}"
+for secret in buildbot_www_pass db_password github_token halide_bb_pass webhook_token; do
   if [ ! -s "$secrets_dir/${secret}.txt" ]; then
     fail "Missing or empty $secrets_dir/${secret}.txt: cannot continue"
   fi

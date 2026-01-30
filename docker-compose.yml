@@ -1,8 +1,22 @@
 services:
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    secrets:
+      - db_password.txt
+    environment:
+      POSTGRES_DB: buildbot
+      POSTGRES_USER: buildbot
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password.txt
+    restart: unless-stopped
+
   buildbot:
     build:
       context: .
       dockerfile: master/Dockerfile
+    depends_on:
+      - db
     ports:
       - "9990:9990"
     volumes:
@@ -10,13 +24,14 @@ services:
       - buildbot-gitpoller:/buildbot/master/gitpoller-llvm-workdir
       - ${HALIDE_BB_MASTER_ARTIFACTS_DIR:-./data/artifacts}:/artifacts
     secrets:
+      - db_password.txt
       - github_token.txt
       - halide_bb_pass.txt
       - webhook_token.txt
       - buildbot_www_pass.txt
     environment:
       HALIDE_BB_MASTER_ARTIFACTS_DIR: /artifacts
-      HALIDE_BB_SECRETS_DIR: /run/secrets
+      HALIDE_BB_MASTER_SECRETS_DIR: /run/secrets
     restart: unless-stopped
 
   caddy:
@@ -37,8 +52,11 @@ volumes:
   buildbot-gitpoller:
   caddy-data:
   caddy-config:
+  db-data:
 
 secrets:
+  db_password.txt:
+    file: ./secrets/db_password.txt
   github_token.txt:
     file: ./secrets/github_token.txt
   halide_bb_pass.txt:
