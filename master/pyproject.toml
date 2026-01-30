@@ -5,7 +5,7 @@ requires-python = ">=3.10"
 dependencies = [
     "buildbot-www",
     "buildbot~=4.0",
-    "psycopg2", # PostgreSQL database driver
+    "psycopg2-binary~=2.9", # PostgreSQL database driver
     "treq>=25.5", # required by GitHubStatusPush
     "twisted>=23.10",
 ]
