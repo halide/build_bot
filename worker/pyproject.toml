@@ -3,7 +3,7 @@ name = "worker"
 version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = [
-    "buildbot-worker~=3.1",
+    "buildbot-worker~=4.0",
     "cmake>=3.28",
     "ninja>=1.11",
     "pywin32>=311 ; sys_platform == 'win32'", # Missing from buildbot-worker
