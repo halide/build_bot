@@ -3,7 +3,7 @@
 set -eo pipefail
 
 fail() {
-  echo "$@"
+  echo "$@" >&2
   exit 1
 }
 
