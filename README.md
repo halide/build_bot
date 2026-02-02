@@ -8,34 +8,13 @@ $ uv sync --all-packages
 
 # Master configuration
 
-## Web server settings
-
-Using your production-quality web server of choice (Apache, Nginx, etc.), choose
-a URL at which to host the master. Call this `BUILDBOT_WWW`. Then, set up a
-reverse proxy for the buildbot webserver (on port 8012). For Apache, your
-configuration might look like:
-
-```
-ProxyPass /ws ws://localhost:8012/ws
-ProxyPassReverse /ws ws://localhost:8012/ws
-ProxyPass / http://localhost:8012/
-ProxyPassReverse / http://localhost:8012/
-
-SetEnvIf X-Url-Scheme https HTTPS=1
-ProxyPreserveHost On
-```
-
-Note that you will need to enable `proxy_wstunnel` for this to work (via
-`a2enmod`). It is essential that HTTPS only is used (for security).
-
-**Close port 8012 to the internet.** If you can't have port 9990 open, redirect
-another port to it. Whichever port this is, call it `MASTER_PORT`.
-
-Make a note of your master's IP address. Call this `MASTER_ADDR`.
+The master is deployed via [Docker Compose][dc], which manages three services:
+a PostgreSQL database, the Buildbot master, and a [Caddy] reverse proxy with
+automatic HTTPS.
 
 ## Secrets
 
-Four secrets control authentication with external users and servers. These will
+Five secrets control authentication with external users and servers. These will
 need to be determined before starting up a new master.
 
 1. Obtain a [GitHub personal access token](https://github.com/settings/tokens)
@@ -48,16 +27,30 @@ need to be determined before starting up a new master.
    Call this `WEBHOOK_SECRET`.
 4. Choose a password for the `halidenightly` user to authenticate with the web
    interface. Call this `WWW_PASSWORD`.
+5. Generate a password for the PostgreSQL database. Call this `DB_PASSWORD`.
+   This is only needed when using PostgreSQL (i.e., when
+   `HALIDE_BB_MASTER_DB_URL` contains `{DB_PASSWORD}`). The default SQLite
+   backend does not require it.
 
 A convenient command for generating a secure secret is `openssl rand -hex 20`.
 
-## GitHub Configuration
+Write all the secrets to the corresponding files:
+
+```console
+$ echo "$GITHUB_TOKEN" > secrets/github_token.txt
+$ echo "$WORKER_SECRET" > secrets/halide_bb_pass.txt
+$ echo "$WEBHOOK_SECRET" > secrets/webhook_token.txt
+$ echo "$WWW_PASSWORD" > secrets/buildbot_www_pass.txt
+$ echo "$DB_PASSWORD" > secrets/db_password.txt
+```
+
+## GitHub configuration
 
 Make your way to the Webhooks section of your repository settings. The url is
 `https://github.com/{owner}/{repo}/settings/hooks`. The following settings are
 the correct ones:
 
-1. **Payload URL:** `$BUILDBOT_WWW/change_hook/github`
+1. **Payload URL:** `https://buildbot.halide-lang.org/master/change_hook/github`
 2. **Content type:** `application/json`
 3. **Secret:** `$WEBHOOK_SECRET`
 4. **SSL verification:** Select _Enable SSL verification_
@@ -67,47 +60,91 @@ the correct ones:
 
 ## Starting the master
 
-First, write all the secrets to the corresponding files:
-
-```console
-$ echo "$GITHUB_TOKEN" > secrets/github_token.txt
-$ echo "$WORKER_SECRET" > secrets/halide_bb_pass.txt
-$ echo "$WEBHOOK_SECRET" > secrets/webhook_token.txt
-$ echo "$WWW_PASSWORD" > secrets/buildbot_www_pass.txt
-```
-
-Then, create a database for the master to save its work. This only needs to be
-done once.
-
-```console
-$ ./master.sh upgrade-master
-```
-
-Choose a directory to hold artifacts for package runs:
+Choose a directory to hold artifacts from package builds (the default is
+`./data/artifacts`):
 
 ```console
 $ export HALIDE_BB_MASTER_ARTIFACTS_DIR=/srv/www/buildbot/public_html/artifacts
 ```
 
-Finally, start the master!
+Then start all services:
+
+```console
+$ docker compose up -d --build
+```
+
+The database is automatically initialized on first start. Caddy handles TLS
+certificates, so there is no manual web server configuration needed. The
+Buildbot web interface is available at `https://buildbot.halide-lang.org/master/`
+and artifacts are served at the site root.
+
+Port 9990 must be reachable by workers. Port 8012 is internal only; Caddy
+proxies it on ports 80/443.
+
+### Running without Docker
+
+By default, the master uses a SQLite database (`sqlite:///state.sqlite`), so
+no external database is required. To use PostgreSQL instead, set
+`HALIDE_BB_MASTER_DB_URL`:
+
+```console
+$ export HALIDE_BB_MASTER_DB_URL="postgresql://buildbot:{DB_PASSWORD}@db/buildbot"
+```
+
+Then start the master:
 
 ```console
 $ ./master.sh start
 ```
 
+The script automatically runs `upgrade-master` before starting. If the master
+is already running, invoking `./master.sh` with no arguments will reconfig it
+instead.
+
 # Worker configuration
 
 The master recognizes workers by their reported names, e.g. `linux-worker-4`
-or `win-worker-1`. To launch the buildbot daemon on the worker named
-`$WORKER_NAME`, run the following commands after setting up the Python
-environment as detailed above:
+or `win-worker-1`.
+
+## Linux / macOS
+
+Write the worker secret and set the worker name, then use the wrapper script:
 
 ```console
 $ echo "$WORKER_SECRET" > worker/halide_bb_pass.txt
-$ export HALIDE_BB_WORKER_NAME=$WORKER_NAME  # required
-$ export HALIDE_BB_MASTER_ADDR=$MASTER_ADDR  # default = public Halide master
-$ export HALIDE_BB_MASTER_PORT=$MASTER_PORT  # default = 9990
-$ uv run --package worker buildbot-worker start worker
+$ export HALIDE_BB_WORKER_NAME=$WORKER_NAME
+$ ./worker.sh
 ```
 
+## Windows
+
+```powershell
+> Set-Content worker/halide_bb_pass.txt "$WORKER_SECRET"
+> $env:HALIDE_BB_WORKER_NAME = "$WORKER_NAME"
+> .\worker.ps1
+```
+
+## Optional environment variables
+
+| Variable                | Default                    | Description     |
+|-------------------------|----------------------------|-----------------|
+| `HALIDE_BB_MASTER_ADDR` | `buildbot.halide-lang.dev` | Master hostname |
+| `HALIDE_BB_MASTER_PORT` | `9990`                     | Master PB port  |
+
+## Platform-specific installation
+
+Automated installation scripts that set up system dependencies and configure
+the worker to start automatically are provided under `worker/`:
+
+- **macOS:** `worker/macos/install.sh` — installs Homebrew dependencies,
+  configures ccache, and installs a launchd agent so the worker starts on login.
+  Requires `HALIDE_BB_WORKER_NAME`, `HL_WEBGPU_NODE_BINDINGS`,
+  `HL_WEBGPU_NATIVE_LIB`, and `EMSDK` to be set before running.
+
+- **Windows:** `worker/windows/install.ps1` — installs dependencies via winget,
+  sets up Visual Studio 2022, installs uv, and bootstraps vcpkg with the
+  required libraries.
+
+[Caddy]: https://caddyserver.com
+[dc]: https://docs.docker.com/compose/
 [uv]: https://docs.astral.sh/uv
