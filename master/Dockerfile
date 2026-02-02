@@ -22,22 +22,13 @@ RUN apt-get update \
 RUN useradd --create-home --home-dir /buildbot buildbot
 
 # Copy virtual environment from builder
-COPY --from=builder /buildbot/.venv /buildbot/.venv
+COPY --from=builder --chown=buildbot:buildbot /buildbot/.venv /buildbot/.venv
 ENV PATH="/buildbot/.venv/bin:$PATH" \
     VIRTUAL_ENV="/buildbot/.venv"
 
-# Copy master source files
-COPY master/master.cfg \
-     master/custom_steps.py \
-     master/buildbot.tac \
-     master/toolchain.linux-arm32.cmake \
-     /buildbot/master/
-
-COPY master.sh /buildbot/master.sh
-RUN chmod +x /buildbot/master.sh
-
-# Ensure buildbot owns its home directory
-RUN chown -R buildbot:buildbot /buildbot
+# Copy source files
+COPY --chown=buildbot:buildbot master/ master/
+COPY --chown=buildbot:buildbot master.sh master.sh
 
 USER buildbot
 WORKDIR /buildbot
