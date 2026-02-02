@@ -21,6 +21,9 @@ RUN apt-get update \
 # Non-root user
 RUN useradd --create-home --home-dir /buildbot buildbot
 
+USER buildbot
+WORKDIR /buildbot
+
 # Copy virtual environment from builder
 COPY --from=builder --chown=buildbot:buildbot /buildbot/.venv /buildbot/.venv
 ENV PATH="/buildbot/.venv/bin:$PATH" \
@@ -29,9 +32,6 @@ ENV PATH="/buildbot/.venv/bin:$PATH" \
 # Copy source files
 COPY --chown=buildbot:buildbot master/ master/
 COPY --chown=buildbot:buildbot master.sh master.sh
-
-USER buildbot
-WORKDIR /buildbot
 
 EXPOSE 8012 9990
 
