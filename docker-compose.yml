@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: buildbot
       POSTGRES_USER: buildbot
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password.txt
+    logging:
+      driver: local
     restart: unless-stopped
 
   buildbot:
@@ -31,6 +33,9 @@ services:
     environment:
       HALIDE_BB_MASTER_ARTIFACTS_DIR: /artifacts
       HALIDE_BB_MASTER_SECRETS_DIR: /run/secrets
+      HALIDE_BB_MASTER_DB_URL: "postgresql://buildbot:{DB_PASSWORD}@db/buildbot"
+    logging:
+      driver: local
     restart: unless-stopped
 
   caddy:
@@ -44,6 +49,8 @@ services:
       - caddy-data:/data
       - caddy-config:/config
       - ${HALIDE_BB_MASTER_ARTIFACTS_DIR:-./data/artifacts}:/artifacts:ro
+    logging:
+      driver: local
     restart: unless-stopped
 
 volumes:

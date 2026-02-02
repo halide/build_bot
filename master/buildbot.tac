@@ -1,29 +1,14 @@
-import os
+import sys
 from pathlib import Path
 
 from buildbot.master import BuildMaster
 from twisted.application import service
-from twisted.python.log import ILogObserver, FileLogObserver
-from twisted.python.logfile import LogFile
-
-basedir = str(Path(__file__).parent.resolve())
-rotateLength = 10000000
-maxRotatedFiles = 10
-configfile = "master.cfg"
-
-# Default umask for server
-umask = None
-
-logfile = LogFile.fromFullPath(
-    os.path.join(basedir, "twistd.log"), rotateLength=rotateLength, maxRotatedFiles=maxRotatedFiles
-)
+from twisted.logger import ILogObserver, textFileLogObserver
 
 # note: this line is matched against to check that this is a buildmaster
 # directory; do not edit it.
 application = service.Application('buildmaster')  # fmt: skip
-application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
+application.setComponent(ILogObserver, textFileLogObserver(sys.stdout))
 
-m = BuildMaster(basedir, configfile, umask)
+m = BuildMaster(str(Path(__file__).parent), "master.cfg", umask=None)
 m.setServiceParent(application)
-m.log_rotation.rotateLength = rotateLength
-m.log_rotation.maxRotatedFiles = maxRotatedFiles
