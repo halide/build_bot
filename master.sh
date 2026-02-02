@@ -28,11 +28,18 @@ fi
 # Check necessary files are present
 
 secrets_dir="${HALIDE_BB_MASTER_SECRETS_DIR:-secrets}"
-for secret in buildbot_www_pass db_password github_token halide_bb_pass webhook_token; do
+for secret in buildbot_www_pass github_token halide_bb_pass webhook_token; do
   if [ ! -s "$secrets_dir/${secret}.txt" ]; then
     fail "Missing or empty $secrets_dir/${secret}.txt: cannot continue"
   fi
 done
+
+db_url="${HALIDE_BB_MASTER_DB_URL:-sqlite:///state.sqlite}"
+if echo "$db_url" | grep -q '{DB_PASSWORD}'; then
+  if [ ! -s "$secrets_dir/db_password.txt" ]; then
+    fail "Missing or empty $secrets_dir/db_password.txt: required by HALIDE_BB_MASTER_DB_URL"
+  fi
+fi
 
 ##
 # Resolve the buildbot command

@@ -33,6 +33,7 @@ services:
     environment:
       HALIDE_BB_MASTER_ARTIFACTS_DIR: /artifacts
       HALIDE_BB_MASTER_SECRETS_DIR: /run/secrets
+      HALIDE_BB_MASTER_DB_URL: "postgresql://buildbot:{DB_PASSWORD}@db/buildbot"
     logging:
       driver: local
     restart: unless-stopped
