@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
 
   pypi:
-    image: pypiserver/pypiserver:v2.3.2
+    image: pypiserver/pypiserver:v2.4.0
     volumes:
       - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/data/packages
     secrets:
