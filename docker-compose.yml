@@ -40,7 +40,6 @@ services:
 
   pypi:
     image: pypiserver/pypiserver:v2.3.2
-    user: "1000:1000"
     volumes:
       - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/data/packages
     secrets:
