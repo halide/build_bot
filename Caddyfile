@@ -1,3 +1,13 @@
+pypi.halide-lang.org {
+  reverse_proxy pypi:8080
+
+  header {
+    Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+    X-Frame-Options DENY
+    X-Content-Type-Options nosniff
+  }
+}
+
 buildbot.halide-lang.org {
   handle_path /master/* {
     handle /sse/* {

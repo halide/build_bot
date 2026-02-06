@@ -38,6 +38,31 @@ services:
       driver: local
     restart: unless-stopped
 
+  pypi:
+    image: pypiserver/pypiserver:v2.3.2
+    volumes:
+      - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/data/packages
+    secrets:
+      - pypi_htpasswd
+    command: run -P /run/secrets/pypi_htpasswd -a update /data/packages
+    logging:
+      driver: local
+    restart: unless-stopped
+
+  pypi-cleanup:
+    image: alpine:3
+    volumes:
+      - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/data/packages
+    entrypoint: /bin/sh
+    command: >-
+      -c 'while true; do
+        find /data/packages -name "*dev0+*" -mtime +30 -delete;
+        sleep 86400;
+      done'
+    logging:
+      driver: local
+    restart: unless-stopped
+
   caddy:
     image: caddy:2-alpine
     ports:
@@ -70,3 +95,5 @@ secrets:
     file: ./secrets/webhook_token.txt
   buildbot_www_pass.txt:
     file: ./secrets/buildbot_www_pass.txt
+  pypi_htpasswd:
+    file: ./secrets/pypi_htpasswd
