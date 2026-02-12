@@ -45,7 +45,7 @@ $ echo "$WORKER_SECRET" > secrets/halide_bb_pass.txt
 $ echo "$WEBHOOK_SECRET" > secrets/webhook_token.txt
 $ echo "$WWW_PASSWORD" > secrets/buildbot_www_pass.txt
 $ echo "$DB_PASSWORD" > secrets/db_password.txt
-$ docker run --rm httpd:2-alpine htpasswd -Bbn upload "$PYPI_PASSWORD" > secrets/pypi_htpasswd
+$ docker run --rm httpd:2-alpine htpasswd -Bbn upload "$PYPI_PASSWORD" > secrets/pypi_htpasswd.txt
 ```
 
 ## GitHub configuration

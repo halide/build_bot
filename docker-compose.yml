@@ -43,8 +43,8 @@ services:
     volumes:
       - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/data/packages
     secrets:
-      - pypi_htpasswd
-    command: run -P /run/secrets/pypi_htpasswd -a update --backend cached-dir /data/packages
+      - pypi_htpasswd.txt
+    command: run -P /run/secrets/pypi_htpasswd.txt -a update --backend cached-dir /data/packages
     logging:
       driver: local
     restart: unless-stopped
@@ -95,5 +95,5 @@ secrets:
     file: ./secrets/webhook_token.txt
   buildbot_www_pass.txt:
     file: ./secrets/buildbot_www_pass.txt
-  pypi_htpasswd:
-    file: ./secrets/pypi_htpasswd
+  pypi_htpasswd.txt:
+    file: ./secrets/pypi_htpasswd.txt
