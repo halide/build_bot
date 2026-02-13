@@ -26,10 +26,6 @@ extra-paths = ["master"]
 [tool.ty.src]
 include = ["master/custom_steps.py"]
 
-[tool.ty.rules]
-# BuilderConfig gets a dynamic `builder_type` attribute attached
-unresolved-attribute = "warn"
-
 [tool.bandit]
 targets = ["master/master.cfg", "master/custom_steps.py", "master/buildbot.tac", "worker/buildbot.tac"]
 skips = [
