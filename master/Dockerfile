@@ -12,7 +12,7 @@ RUN uv sync --package master --frozen --no-dev --no-editable
 # ── Runtime stage ────────────────────────────────────────────────────────────
 FROM python:3.12-slim-bookworm
 
-# git  – needed by GitPoller and GitHub source steps
+# git  – needed by GitHub source step
 # tini – simplest possible init system (reaps zombies, handles signals)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git tini \

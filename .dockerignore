@@ -17,7 +17,6 @@ master/twistd.log.*
 master/twistd.pid
 master/twistd.hostname
 master/http.log
-master/gitpoller-*
 
 # Worker platform dirs (keep worker/pyproject.toml for UV workspace)
 worker/macos

@@ -21,8 +21,6 @@ services:
       - db
     ports:
       - "9990:9990"
-    volumes:
-      - buildbot-gitpoller:/buildbot/master/gitpoller-llvm-workdir
     secrets:
       - db_password.txt
       - github_token.txt
@@ -76,7 +74,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  buildbot-gitpoller:
   caddy-data:
   caddy-config:
   db-data:
