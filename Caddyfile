@@ -9,6 +9,8 @@ pypi.halide-lang.org {
 }
 
 buildbot.halide-lang.org {
+  redir / /master/ temporary
+
   handle_path /master/* {
     handle /sse/* {
       reverse_proxy buildbot:8012 {
@@ -17,11 +19,6 @@ buildbot.halide-lang.org {
     }
 
     reverse_proxy buildbot:8012
-  }
-
-  handle {
-    root * /artifacts
-    file_server browse
   }
 
   header {

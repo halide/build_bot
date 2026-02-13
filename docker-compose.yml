@@ -23,7 +23,6 @@ services:
       - "9990:9990"
     volumes:
       - buildbot-gitpoller:/buildbot/master/gitpoller-llvm-workdir
-      - ${HALIDE_BB_MASTER_ARTIFACTS_DIR:-./data/artifacts}:/artifacts
     secrets:
       - db_password.txt
       - github_token.txt
@@ -31,7 +30,6 @@ services:
       - webhook_token.txt
       - buildbot_www_pass.txt
     environment:
-      HALIDE_BB_MASTER_ARTIFACTS_DIR: /artifacts
       HALIDE_BB_MASTER_SECRETS_DIR: /run/secrets
       HALIDE_BB_MASTER_DB_URL: "postgresql://buildbot:{DB_PASSWORD}@db/buildbot"
     logging:
@@ -73,7 +71,6 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
-      - ${HALIDE_BB_MASTER_ARTIFACTS_DIR:-./data/artifacts}:/artifacts:ro
     logging:
       driver: local
     restart: unless-stopped
