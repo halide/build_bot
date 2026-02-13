@@ -13,3 +13,14 @@ jobs:
         uses: astral-sh/ruff-action@v3
         with:
           args: "format --check"
+
+  ty:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Type-check master config
+        run: |
+          uv sync
+          uv run --package master ty check master/master.cfg master/custom_steps.py

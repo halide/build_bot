@@ -71,7 +71,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
         root = Xml.fromstring(ctest_log)
 
         for test in root.findall(".//Test[@Status='failed']"):
-            log = yield self.addLog(test.findtext("Name"))
+            log = yield self.addLog(test.findtext("Name", "unknown"))
             self.write_xml(
                 test,
                 ("./Results/NamedMeasurement[@name='Environment']/Value", log.addHeader),
