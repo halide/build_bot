@@ -7,7 +7,6 @@ twistd.hostname
 twistd.log
 twistd.log.*
 twistd.pid
-master/gitpoller-*
 master.cfg.sample
 state.sqlite
 state.sqlite-shm
