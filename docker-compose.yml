@@ -80,14 +80,14 @@ volumes:
 
 secrets:
   db_password.txt:
-    file: ./secrets/db_password.txt
+    file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/db_password.txt
   github_token.txt:
-    file: ./secrets/github_token.txt
+    file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/github_token.txt
   halide_bb_pass.txt:
-    file: ./secrets/halide_bb_pass.txt
+    file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/halide_bb_pass.txt
   webhook_token.txt:
-    file: ./secrets/webhook_token.txt
+    file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/webhook_token.txt
   buildbot_www_pass.txt:
-    file: ./secrets/buildbot_www_pass.txt
+    file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/buildbot_www_pass.txt
   pypi_htpasswd.txt:
-    file: ./secrets/pypi_htpasswd.txt
+    file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/pypi_htpasswd.txt
