@@ -4,17 +4,26 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.0
     hooks:
       - id: ruff-check
         args: [--fix]
+        files: ^(master/(master\.cfg|custom_steps\.py|buildbot\.tac)|worker/buildbot\.tac)$
+        types_or: [python, text]
       - id: ruff-format
+        files: ^(master/(master\.cfg|custom_steps\.py|buildbot\.tac)|worker/buildbot\.tac)$
+        types_or: [python, text]
+
   - repo: https://github.com/PyCQA/bandit
     rev: 1.9.3
     hooks:
       - id: bandit
-        args: ["-c", "pyproject.toml"]
+        args: ["-c", "pyproject.toml", "master/master.cfg", "master/custom_steps.py", "master/buildbot.tac", "worker/buildbot.tac"]
+        pass_filenames: false
+        always_run: true
+        additional_dependencies: [ "bandit[toml]" ]
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
@@ -25,7 +34,9 @@ repos:
     rev: v2.14
     hooks:
       - id: vulture
+        args: ["master/master.cfg", "master/custom_steps.py", "master/buildbot.tac", "worker/buildbot.tac"]
         pass_filenames: false
+        always_run: true
 
   - repo: local
     hooks:

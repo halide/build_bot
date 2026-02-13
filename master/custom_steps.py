@@ -1,4 +1,4 @@
-import xml.etree.ElementTree as Xml  # nosec B405 -- XML comes from trusted CTest output
+import xml.etree.ElementTree as Xml  # nosec B405
 
 from buildbot.process.buildstep import BuildStepFailed, BuildStep, ShellMixin
 from buildbot.steps.worker import CompositeStepMixin
@@ -68,7 +68,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
         ctest_log = yield self.getFileContentFromWorker(xml_results[0], abandonOnFailure=True)
 
         # Parse the result, collecting test failures into more convenient logs.
-        root = Xml.fromstring(ctest_log)  # nosec B314 -- XML comes from trusted CTest output
+        root = Xml.fromstring(ctest_log)  # nosec B314
 
         for test in root.findall(".//Test[@Status='failed']"):
             log = yield self.addLog(test.findtext("Name", "unknown"))
