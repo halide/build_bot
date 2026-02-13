@@ -64,11 +64,10 @@ the correct ones:
 
 ## Starting the master
 
-Choose directories to hold build artifacts and PyPI packages (the defaults are
-`./data/artifacts` and `./data/packages`, respectively):
+Optionally choose a directory to hold PyPI packages (the default is
+`./data/packages`):
 
 ```console
-$ export HALIDE_BB_MASTER_ARTIFACTS_DIR=$HOME/artifacts
 $ export HALIDE_BB_PYPI_PACKAGES_DIR=$HOME/wheels
 ```
 
@@ -80,8 +79,7 @@ $ docker compose up -d --build
 
 The database is automatically initialized on first start. Caddy handles TLS
 certificates, so there is no manual web server configuration needed. The
-Buildbot web interface is available at `https://buildbot.halide-lang.org/master/`
-and artifacts are served at the site root.
+Buildbot web interface is available at `https://buildbot.halide-lang.org/master/`.
 
 Port 9990 must be reachable by workers. Port 8012 is internal only; Caddy
 proxies it on ports 80/443.
