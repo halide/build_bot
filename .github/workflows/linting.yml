@@ -21,4 +21,6 @@ jobs:
       - uses: astral-sh/setup-uv@v6
 
       - name: Type-check master config
-        run: uv run --package master ty check master/master.cfg master/custom_steps.py
+        run: |
+          uv sync
+          uv run --package master ty check master/master.cfg master/custom_steps.py
