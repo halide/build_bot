@@ -30,5 +30,18 @@ include = ["master/custom_steps.py"]
 # BuilderConfig gets a dynamic `builder_type` attribute attached
 unresolved-attribute = "warn"
 
+[tool.bandit]
+targets = ["master/master.cfg", "master/custom_steps.py", "master/buildbot.tac", "worker/buildbot.tac"]
+skips = [
+    "B101",  # assert_used: asserts are intentional for config validation
+]
+
+[tool.vulture]
+paths = ["master/master.cfg", "master/custom_steps.py", "master/buildbot.tac", "worker/buildbot.tac"]
+min_confidence = 80
+
+[tool.codespell]
+skip = ".venv,*.pyc,__pycache__"
+
 [tool.uv.workspace]
 members = ["master", "worker"]
