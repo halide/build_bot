@@ -45,20 +45,6 @@ services:
       driver: local
     restart: unless-stopped
 
-  pypi-cleanup:
-    image: alpine:3
-    volumes:
-      - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/data/packages
-    entrypoint: /bin/sh
-    command: >-
-      -c 'while true; do
-        find /data/packages -name "*dev0+*" -mtime +30 -delete;
-        sleep 86400;
-      done'
-    logging:
-      driver: local
-    restart: unless-stopped
-
   caddy:
     image: caddy:2-alpine
     ports:
