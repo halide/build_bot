@@ -1,0 +1,26 @@
+name: Deploy to production
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to buildbot.halide-lang.org
+    runs-on: ubuntu-latest
+    if: github.repository == 'halide/build_bot'
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: buildbot.halide-lang.org
+          port: ${{ secrets.DEPLOY_SSH_PORT }}
+          username: ${{ secrets.DEPLOY_SSH_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: cd ~/build_bot && git pull && docker compose up -d --build
