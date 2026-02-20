@@ -42,7 +42,7 @@ repos:
     hooks:
       - id: ty-check
         name: ty
-        entry: uv run --package master ty check master/master.cfg master/custom_steps.py
+        entry: uv run ty check master/master.cfg master/custom_steps.py
         language: system
         pass_filenames: false
         files: ^master/(master\.cfg|custom_steps\.py)$
