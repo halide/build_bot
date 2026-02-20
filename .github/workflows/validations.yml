@@ -114,4 +114,13 @@ jobs:
           port: ${{ secrets.DEPLOY_SSH_PORT }}
           username: ${{ secrets.DEPLOY_SSH_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: cd ~/build_bot && git pull && docker compose up -d --build
+          script: |
+            cd ~/build_bot
+            BEFORE=$(git rev-parse HEAD)
+            git pull
+            AFTER=$(git rev-parse HEAD)
+            BUILD_FLAG=""
+            if git diff --name-only "$BEFORE" "$AFTER" | grep -qE '^(master/|master\.sh|pyproject\.toml|uv\.lock)'; then
+              BUILD_FLAG="--build"
+            fi
+            docker compose up -d $BUILD_FLAG
