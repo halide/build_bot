@@ -13,3 +13,5 @@ state.sqlite
 state.sqlite-shm
 state.sqlite-wal
 worker/llvm*
+__pycache__/
+*.pyc
