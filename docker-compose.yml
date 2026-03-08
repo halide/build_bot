@@ -53,6 +53,7 @@ services:
       - "443:443/udp"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./master/maintenance.html:/srv/maintenance.html:ro
       - caddy-data:/data
       - caddy-config:/config
     logging:
