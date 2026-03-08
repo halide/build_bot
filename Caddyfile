@@ -12,15 +12,13 @@ buildbot.halide-lang.org {
   redir / /master/ temporary
 
   handle_path /master/* {
-    reverse_proxy buildbot:8012 {
-      @error status 5xx
-      handle_response @error {
-        header Content-Type text/html
-        root * /srv
-        rewrite * /maintenance.html
-        file_server
-      }
-    }
+    reverse_proxy buildbot:8012
+  }
+
+  handle_errors {
+    root * /srv
+    rewrite * /maintenance.html
+    file_server
   }
 
   header {
