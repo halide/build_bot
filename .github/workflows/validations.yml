@@ -60,7 +60,7 @@ jobs:
 
       - name: Type-check master config
         run: |
-          uv sync --package master
+          uv sync
           uv run --package master ty check --error-on-warning master/master.cfg master/custom_steps.py
 
   bandit:
