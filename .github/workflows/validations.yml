@@ -33,9 +33,7 @@ jobs:
           uv run --package master buildbot checkconfig master
 
   uv-lock:
-    name: Check worker dependencies are consistent with pyproject.toml
     runs-on: ubuntu-slim
-
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -61,7 +59,9 @@ jobs:
       - uses: astral-sh/setup-uv@v6
 
       - name: Type-check master config
-        run: uv run --package master ty check --error-on-warning master/master.cfg master/custom_steps.py
+        run: |
+          uv sync --package master
+          uv run --package master ty check --error-on-warning master/master.cfg master/custom_steps.py
 
   bandit:
     runs-on: ubuntu-slim
