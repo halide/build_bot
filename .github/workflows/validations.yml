@@ -6,21 +6,10 @@ on:
 
 jobs:
   checkconfig:
-    name: Check buildbot config on Python ${{ matrix.python-version }}
+    name: buildbot checkconfig
     runs-on: ubuntu-slim
-
-    strategy:
-      matrix:
-        python-version: [ "3.10", "3.x" ]
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
       - uses: astral-sh/setup-uv@v6
 
       - name: Check config
@@ -30,7 +19,7 @@ jobs:
           echo "$GITHUB_TOKEN" > secrets/github_token.txt
           openssl rand -hex 20 > secrets/halide_bb_pass.txt
           openssl rand -hex 20 > secrets/webhook_token.txt
-          uv run --package master buildbot checkconfig master
+          uv run --package master --python 3.12 buildbot checkconfig master
 
   uv-lock:
     runs-on: ubuntu-slim
