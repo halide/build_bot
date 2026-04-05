@@ -131,7 +131,7 @@ $ ./worker.sh
 
 | Variable                | Default                    | Description     |
 |-------------------------|----------------------------|-----------------|
-| `HALIDE_BB_MASTER_ADDR` | `buildbot.halide-lang.dev` | Master hostname |
+| `HALIDE_BB_MASTER_ADDR` | `buildbot.halide-lang.org` | Master hostname |
 | `HALIDE_BB_MASTER_PORT` | `9990`                     | Master PB port  |
 
 ## Platform-specific installation

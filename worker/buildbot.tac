@@ -27,7 +27,7 @@ application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 # buildmaster_host = os.environ.get('HALIDE_BB_MASTER_ADDR', '192.184.254.87')
 # buildmaster_host = os.environ.get('HALIDE_BB_MASTER_ADDR', '142.254.82.210')
 
-buildmaster_host = os.environ.get("HALIDE_BB_MASTER_ADDR", "buildbot.halide-lang.dev")
+buildmaster_host = os.environ.get("HALIDE_BB_MASTER_ADDR", "buildbot.halide-lang.org")
 port = os.environ.get("HALIDE_BB_MASTER_PORT", 9990)
 workername = os.environ.get("HALIDE_BB_WORKER_NAME")
 passwd = Path("halide_bb_pass.txt").read_text().strip()
