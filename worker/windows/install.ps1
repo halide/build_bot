@@ -43,8 +43,6 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 ##
 # Install vcpkg and its dependencies
 
-$baseline = "2025.07.25"
-
 $vcpkg_root = "C:\vcpkg"
 $vcpkg_repo = "https://github.com/microsoft/vcpkg.git"
 
@@ -59,8 +57,9 @@ else
     git -C $vcpkg_root fetch --tags origin
 }
 
-Write-Host "Checking out vcpkg $baseline..."
-git -C $vcpkg_root checkout $baseline
+Write-Host "Checking out vcpkg..."
+git -C $vcpkg_root checkout main
+git -C $vcpkg_root pull
 
 Write-Host "Setting VCPKG_ROOT environment variable..."
 [Environment]::SetEnvironmentVariable("VCPKG_ROOT", "$vcpkg_root", "User")
@@ -68,11 +67,6 @@ $env:VCPKG_ROOT = $vcpkg_root
 
 Write-Host "Bootstrapping vcpkg..."
 & "$vcpkg_root\bootstrap-vcpkg.bat" -disableMetrics
-
-Write-Host "Installing vcpkg packages..."
-# TODO: determine this from the repository
-& "$vcpkg_root\vcpkg.exe" install libjpeg-turbo libpng zlib openblas --triplet x64-windows
-& "$vcpkg_root\vcpkg.exe" install libjpeg-turbo libpng zlib openblas --triplet x86-windows
 
 ##
 # All done!
