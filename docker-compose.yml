@@ -40,7 +40,7 @@ services:
       - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/data/packages
     secrets:
       - pypi_htpasswd.txt
-    command: run -P /run/secrets/pypi_htpasswd.txt -a update --backend cached-dir /data/packages
+    command: run -P /run/secrets/pypi_htpasswd.txt -a update --backend cached-dir --hash-algo off /data/packages
     logging:
       driver: local
     restart: unless-stopped
