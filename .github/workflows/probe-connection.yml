@@ -1,0 +1,10 @@
+name: probe
+on: workflow_dispatch
+jobs:
+  reach:
+    runs-on: ubuntu-slim
+    steps:
+      - run: |
+          echo "egress IP:"; curl -sS https://api.ipify.org; echo
+          echo "--- connect test ---"
+          curl -4 -v --connect-timeout 20 https://pypi.halide-lang.org/ 2>&1 | tail -25
