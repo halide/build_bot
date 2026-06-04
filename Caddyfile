@@ -1,4 +1,12 @@
 pypi.halide-lang.org {
+  # Serve the (large, static) wheel files directly from disk so that
+  # downloads don't tie up pypiserver's small Waitress thread pool. Only
+  # the generated indexes and uploads (POST) still hit the Python server.
+  handle_path /packages/* {
+    root * /srv/wheels
+    file_server
+  }
+
   reverse_proxy pypi:8080
 
   header {

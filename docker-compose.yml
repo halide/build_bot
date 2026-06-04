@@ -54,6 +54,7 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./master/maintenance.html:/srv/maintenance.html:ro
+      - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/srv/wheels:ro
       - caddy-data:/data
       - caddy-config:/config
     logging:
