@@ -76,9 +76,18 @@ jobs:
       - name: Run vulture
         run: pipx run vulture master/master.cfg master/custom_steps.py master/buildbot.tac worker/buildbot.tac
 
+  caddy-fmt:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Check Caddyfile formatting
+        run: uvx --from caddy-bin caddy fmt --diff caddy/Caddyfile
+
   deploy:
     name: Deploy to buildbot.halide-lang.org
-    needs: [ checkconfig, uv-lock, ruff, ty, bandit, codespell, vulture ]
+    needs: [ checkconfig, uv-lock, ruff, ty, bandit, codespell, vulture, caddy-fmt ]
     runs-on: ubuntu-slim
     if: github.repository == 'halide/build_bot' && github.ref == 'refs/heads/master'
     concurrency:

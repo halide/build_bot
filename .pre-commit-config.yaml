@@ -46,3 +46,13 @@ repos:
         language: system
         pass_filenames: false
         files: ^master/(master\.cfg|custom_steps\.py)$
+
+      # caddy-bin ships the caddy binary via pip, so no Docker is required.
+      # `caddy fmt --diff` prints the diff and exits 1 if the file isn't
+      # formatted; fix with `caddy fmt --overwrite caddy/Caddyfile`.
+      - id: caddy-fmt
+        name: caddy fmt
+        entry: caddy fmt --diff
+        language: python
+        additional_dependencies: ["caddy-bin"]
+        files: ^caddy/Caddyfile$
