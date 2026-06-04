@@ -47,14 +47,20 @@ services:
 
   caddy:
     image: caddy:2-alpine
+    # --watch reloads the Caddyfile on change. It works only because the
+    # config and assets are bind-mounted as directories below: a single-file
+    # bind pins the original inode, so git's atomic-rename-on-pull would be
+    # invisible to the running container (and a reload would re-read stale
+    # content). Mounting the parent dirs lets the new inodes show through.
+    command: caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --watch
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./master/maintenance.html:/srv/maintenance.html:ro
-      - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/srv/wheels:ro
+      - ./caddy:/etc/caddy:ro
+      - ./www:/srv:ro
+      - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/wheels:ro
       - caddy-data:/data
       - caddy-config:/config
     logging:

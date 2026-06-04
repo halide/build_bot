@@ -12,7 +12,7 @@ pypi.halide-lang.org {
   }
 
   handle_path /packages/* {
-    root * /srv/wheels
+    root * /wheels
     file_server
   }
 
