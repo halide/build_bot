@@ -109,7 +109,7 @@ instead.
 The master recognizes workers by their reported names, e.g. `linux-worker-4`
 or `win-worker-1`.
 
-## Linux / macOS
+## Linux
 
 Write the worker secret and set the worker name, then use the wrapper script:
 
@@ -138,11 +138,6 @@ $ ./worker.sh
 
 Automated installation scripts that set up system dependencies and configure
 the worker to start automatically are provided under `worker/`:
-
-- **macOS:** `worker/macos/install.sh` — installs Homebrew dependencies,
-  configures ccache, and installs a launchd agent so the worker starts on login.
-  Requires `HALIDE_BB_WORKER_NAME`, `HL_WEBGPU_NODE_BINDINGS`,
-  `HL_WEBGPU_NATIVE_LIB`, and `EMSDK` to be set before running.
 
 - **Windows:** `worker/windows/install.ps1` — installs dependencies via winget,
   sets up Visual Studio 2022, installs uv, and bootstraps vcpkg with the
