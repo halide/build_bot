@@ -17,6 +17,11 @@ services:
     build:
       context: .
       dockerfile: master/Dockerfile
+    # Buildbot registers itself in the `masters` DB table under the name
+    # "{hostname}:{basedir}". Without a pinned hostname, Docker assigns a new
+    # random one (the container ID) every time the container is recreated,
+    # so each update would otherwise create a brand-new master row forever.
+    hostname: buildbot-master
     depends_on:
       - db
     ports:
