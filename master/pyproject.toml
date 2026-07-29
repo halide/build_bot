@@ -8,4 +8,5 @@ dependencies = [
     "psycopg2-binary~=2.9", # PostgreSQL database driver
     "treq>=25.5", # required by GitHubStatusPush
     "twisted>=23.10",
+    "zstandard>=0.22", # log chunk compression (c['logCompressionMethod'])
 ]
