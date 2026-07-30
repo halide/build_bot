@@ -1,11 +1,11 @@
 import os
 import sys
-
 from pathlib import Path
+
 from buildbot_worker.bot import Worker
 from twisted.application import service
+from twisted.python.log import FileLogObserver, ILogObserver
 from twisted.python.logfile import LogFile
-from twisted.python.log import ILogObserver, FileLogObserver
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 rotateLength = 10000000
@@ -28,7 +28,7 @@ application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 # buildmaster_host = os.environ.get('HALIDE_BB_MASTER_ADDR', '142.254.82.210')
 
 buildmaster_host = os.environ.get("HALIDE_BB_MASTER_ADDR", "buildbot.halide-lang.org")
-port = os.environ.get("HALIDE_BB_MASTER_PORT", 9990)
+port = int(os.environ.get("HALIDE_BB_MASTER_PORT", "9990"))
 workername = os.environ.get("HALIDE_BB_WORKER_NAME")
 passwd = Path("halide_bb_pass.txt").read_text().strip()
 keepalive = 60  # default is 10 mins; we'll use 60 secs because flaky Windows networking

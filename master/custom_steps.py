@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as Xml  # nosec B405
 
-from buildbot.process.buildstep import BuildStepFailed, BuildStep, ShellMixin
+from buildbot.process.buildstep import BuildStep, BuildStepFailed, ShellMixin
 from buildbot.steps.worker import CompositeStepMixin
 from twisted.internet import defer
 
