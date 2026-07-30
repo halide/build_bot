@@ -10,3 +10,8 @@ dependencies = [
     "twisted>=23.10",
     "zstandard>=0.22", # log chunk compression (c['logCompressionMethod'])
 ]
+
+[dependency-groups]
+dev = [
+    "ty~=0.0.16",
+]

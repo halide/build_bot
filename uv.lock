@@ -448,7 +448,6 @@ source = { virtual = "." }
 dev = [
     { name = "pre-commit" },
     { name = "ruff" },
-    { name = "ty" },
 ]
 
 [package.metadata]
@@ -457,7 +456,6 @@ dev = [
 dev = [
     { name = "pre-commit", specifier = "~=4.2" },
     { name = "ruff", specifier = "~=0.15.0" },
-    { name = "ty", specifier = "~=0.0.16" },
 ]
 
 [[package]]
@@ -602,6 +600,11 @@ dependencies = [
     { name = "zstandard" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "ty" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "buildbot", specifier = "~=4.0" },
@@ -611,6 +614,9 @@ requires-dist = [
     { name = "twisted", specifier = ">=23.10" },
     { name = "zstandard", specifier = ">=0.22" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ty", specifier = "~=0.0.16" }]
 
 [[package]]
 name = "msgpack"
