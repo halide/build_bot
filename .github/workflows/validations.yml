@@ -109,4 +109,4 @@ jobs:
             if git diff --name-only "$BEFORE" "$AFTER" | grep -qE '^(master/|master\.sh|pyproject\.toml|uv\.lock)'; then
               BUILD_FLAG="--build"
             fi
-            docker compose up -d $BUILD_FLAG
+            docker compose up -d --remove-orphans $BUILD_FLAG
