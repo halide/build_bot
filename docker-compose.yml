@@ -39,17 +39,6 @@ services:
       driver: local
     restart: unless-stopped
 
-  pypi:
-    image: pypiserver/pypiserver:v2.4.0
-    volumes:
-      - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/data/packages
-    secrets:
-      - pypi_htpasswd.txt
-    command: run -P /run/secrets/pypi_htpasswd.txt -a update --backend cached-dir /data/packages
-    logging:
-      driver: local
-    restart: unless-stopped
-
   caddy:
     image: caddy:2-alpine
     # --watch reloads the Caddyfile on change. It works only because the
@@ -65,27 +54,8 @@ services:
     volumes:
       - ./caddy:/etc/caddy:ro
       - ./www:/srv:ro
-      - ${HALIDE_BB_PYPI_PACKAGES_DIR:-./data/packages}:/wheels:ro
       - caddy-data:/data
       - caddy-config:/config
-      - caddy-logs:/var/log/caddy
-    logging:
-      driver: local
-    restart: unless-stopped
-
-  # Host-level TCP/network sampler for diagnosing the intermittent
-  # wheel-download connect timeouts. network_mode: host so the /proc/net
-  # counters it reads reflect the host stack that terminates inbound :443,
-  # not this container's own namespace. See monitor/sample.sh.
-  netmon:
-    image: alpine:3.20
-    network_mode: host
-    command: sh /monitor/sample.sh
-    volumes:
-      - ./monitor:/monitor:ro
-      - netmon-logs:/var/log/netmon
-    environment:
-      SAMPLE_INTERVAL: "15"
     logging:
       driver: local
     restart: unless-stopped
@@ -93,8 +63,6 @@ services:
 volumes:
   caddy-data:
   caddy-config:
-  caddy-logs:
-  netmon-logs:
   db-data:
 
 secrets:
@@ -108,5 +76,3 @@ secrets:
     file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/webhook_token.txt
   buildbot_www_pass.txt:
     file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/buildbot_www_pass.txt
-  pypi_htpasswd.txt:
-    file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/pypi_htpasswd.txt

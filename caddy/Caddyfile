@@ -7,49 +7,6 @@
 	metrics
 }
 
-pypi.halide-lang.org {
-	# Access log for every request that reaches Caddy. This is the key signal
-	# for the intermittent wheel-download failures: a truncated download shows
-	# up as status 200 with a `size` smaller than the wheel's content-length,
-	# whereas a client-side connect timeout never appears here at all (which
-	# would point at the network path rather than the server). Written to a
-	# dedicated volume so it is not interleaved with Caddy's TLS/ACME logs and
-	# is not rolled off by Docker's log driver.
-	log {
-		output file /var/log/caddy/access.log {
-			roll_size 100MiB
-			roll_keep 20
-			roll_keep_for 2160h
-		}
-		format json
-	}
-
-	# Serve the (large, static) wheel files directly from disk so that
-	# downloads don't tie up pypiserver's small Waitress thread pool. Only
-	# the generated indexes and uploads (POST) still hit the Python server.
-	#
-	# The bare /packages/ path is the index listing that pypiserver renders,
-	# so it must keep going to the backend; only requests for actual files
-	# (/packages/<name>) are served statically. handle blocks are mutually
-	# exclusive and evaluated in order, so the exact-match listing wins first.
-	handle /packages/ {
-		reverse_proxy pypi:8080
-	}
-
-	handle_path /packages/* {
-		root * /wheels
-		file_server
-	}
-
-	reverse_proxy pypi:8080
-
-	header {
-		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
-		X-Frame-Options DENY
-		X-Content-Type-Options nosniff
-	}
-}
-
 buildbot.halide-lang.org {
 	redir / /master/ temporary
 

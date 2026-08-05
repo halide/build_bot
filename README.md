@@ -8,15 +8,24 @@ $ uv sync --all-packages
 
 # Master configuration
 
-The master is deployed via [Docker Compose][dc], which manages five services:
-a PostgreSQL database, the Buildbot master, a [pypiserver] instance for hosting
-`halide-llvm` wheels, a cleanup sidecar that evicts old development wheels, and
-a [Caddy] reverse proxy with automatic HTTPS.
+The master is deployed via [Docker Compose][dc], which manages three services:
+a PostgreSQL database, the Buildbot master, and a [Caddy] reverse proxy with
+automatic HTTPS.
+
+`halide-llvm` (and other) wheels used to be hosted here via a bundled
+[pypiserver] instance at `pypi.halide-lang.org`, fronted by this same Caddy.
+That's gone: the MIT-hosted VM this appliance runs on turned out to be subject
+to intermittent border-security IP quarantines outside anyone's control
+(shared cloud egress IPs occasionally get flagged for unrelated scanning
+activity from other tenants, with no exception mechanism available). Package
+hosting has moved to [halide/pypi] (GitHub Releases + Pages), which routes CI
+traffic off that network path entirely. `pypi.halide-lang.org` now points
+there via DNS; this repo no longer serves it.
 
 ## Secrets
 
-Six secrets control authentication with external users and servers. These will
-need to be determined before starting up a new master.
+Five secrets control authentication with external users and servers. These
+will need to be determined before starting up a new master.
 
 1. Obtain a [GitHub personal access token](https://github.com/settings/tokens)
    with at least the `repo` scope enabled (other scopes that are not currently
@@ -32,8 +41,6 @@ need to be determined before starting up a new master.
    This is only needed when using PostgreSQL (i.e., when
    `HALIDE_BB_MASTER_DB_URL` contains `{DB_PASSWORD}`). The default SQLite
    backend does not require it.
-6. Generate a password for uploading packages to the PyPI server. Call this
-   `PYPI_PASSWORD`.
 
 A convenient command for generating a secure secret is `openssl rand -hex 20`.
 
@@ -45,7 +52,6 @@ $ echo "$WORKER_SECRET" > secrets/halide_bb_pass.txt
 $ echo "$WEBHOOK_SECRET" > secrets/webhook_token.txt
 $ echo "$WWW_PASSWORD" > secrets/buildbot_www_pass.txt
 $ echo "$DB_PASSWORD" > secrets/db_password.txt
-$ docker run --rm httpd:2-alpine htpasswd -Bbn upload "$PYPI_PASSWORD" > secrets/pypi_htpasswd.txt
 ```
 
 ## GitHub configuration
@@ -63,15 +69,6 @@ the correct ones:
    and _"Pushes"_.
 
 ## Starting the master
-
-Optionally choose a directory to hold PyPI packages (the default is
-`./data/packages`):
-
-```console
-$ export HALIDE_BB_PYPI_PACKAGES_DIR=$HOME/wheels
-```
-
-Then start all services:
 
 ```console
 $ docker compose up -d --build
@@ -145,5 +142,6 @@ the worker to start automatically are provided under `worker/`:
 
 [Caddy]: https://caddyserver.com
 [dc]: https://docs.docker.com/compose/
+[halide/pypi]: https://github.com/halide/pypi
 [pypiserver]: https://github.com/pypiserver/pypiserver
 [uv]: https://docs.astral.sh/uv
