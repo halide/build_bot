@@ -2,9 +2,31 @@ import xml.etree.ElementTree as Xml  # nosec B405
 
 from buildbot.process.buildstep import BuildStep, BuildStepFailed, ShellMixin
 from buildbot.steps.worker import CompositeStepMixin
+from buildbot.worker.protocols.base import FileWriterImpl
 from twisted.internet import defer
 
 __all__ = ["CTest"]
+
+
+class _BytesFileWriter(FileWriterImpl):
+    """Like buildbot's own StringFileWriter, but keeps raw bytes instead of eagerly decoding
+    each chunk as UTF-8. StringFileWriter.remote_write() decodes every chunk independently, so a
+    multi-byte character split across a chunk boundary raises UnicodeDecodeError; since that
+    happens inside a PB remote-message handler rather than buildbot's normal command-failure path,
+    the step never gets notified and hangs forever, still holding onto the worker and any locks it
+    acquired (https://github.com/buildbot/buildbot/issues/3982, still open on buildbot 4.3.0).
+    We only need the bytes to hand to Xml.fromstring, which accepts them directly, so decoding
+    isn't even necessary here.
+    """
+
+    def __init__(self):
+        self.buffer = b""
+
+    def remote_write(self, data):
+        self.buffer += data
+
+    def remote_close(self):
+        pass
 
 
 class CTest(ShellMixin, CompositeStepMixin, BuildStep):
@@ -65,7 +87,7 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
         if len(xml_results) != 1:
             raise BuildStepFailed(f"Expected to find a single XML file. Got: {xml_results}")
 
-        ctest_log = yield self.getFileContentFromWorker(xml_results[0], abandonOnFailure=True)
+        ctest_log = yield self.getFileBytesFromWorker(xml_results[0], abandonOnFailure=True)
 
         # Parse the result, collecting test failures into more convenient logs.
         root = Xml.fromstring(ctest_log)  # nosec B314
@@ -97,6 +119,22 @@ class CTest(ShellMixin, CompositeStepMixin, BuildStep):
             yield log.finish()
 
         return cmd.results()
+
+    def getFileBytesFromWorker(self, filename, abandonOnFailure=False):
+        self.checkWorkerHasCommand("uploadFile")
+        writer = _BytesFileWriter()
+        args = {"workdir": self.workdir, "writer": writer, "maxsize": None, "blocksize": 32 * 1024}
+        if self.workerVersionIsOlderThan("uploadFile", "3.0"):
+            args["slavesrc"] = filename
+        else:
+            args["workersrc"] = filename
+
+        def commandComplete(cmd):
+            return None if cmd.didFail() else writer.buffer
+
+        return self.runRemoteCommand(
+            "uploadFile", args, abandonOnFailure=abandonOnFailure, evaluateCommand=commandComplete
+        )
 
     def write_xml(self, test, *sections, indent=0):
         for node, log in sections:
