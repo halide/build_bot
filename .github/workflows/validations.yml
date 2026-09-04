@@ -17,6 +17,7 @@ jobs:
           openssl rand -hex 20 > secrets/buildbot_www_pass.txt
           openssl rand -hex 20 > secrets/db_password.txt
           echo "$GITHUB_TOKEN" > secrets/github_token.txt
+          openssl genrsa -out secrets/github_app_private_key.pem 2048
           openssl rand -hex 20 > secrets/halide_bb_pass.txt
           openssl rand -hex 20 > secrets/webhook_token.txt
           uv run --package master --python 3.12 buildbot checkconfig master
