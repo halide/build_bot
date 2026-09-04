@@ -22,16 +22,28 @@ ignore = [
 extra-paths = ["master"]
 
 [tool.ty.src]
-include = ["master/custom_steps.py"]
+include = ["master/custom_steps.py", "master/github_app_check_push.py"]
 
 [tool.bandit]
-targets = ["master/master.cfg", "master/custom_steps.py", "master/buildbot.tac", "worker/buildbot.tac"]
+targets = [
+    "master/master.cfg",
+    "master/custom_steps.py",
+    "master/github_app_check_push.py",
+    "master/buildbot.tac",
+    "worker/buildbot.tac",
+]
 skips = [
     "B101",  # assert_used: asserts are intentional for config validation
 ]
 
 [tool.vulture]
-paths = ["master/master.cfg", "master/custom_steps.py", "master/buildbot.tac", "worker/buildbot.tac"]
+paths = [
+    "master/master.cfg",
+    "master/custom_steps.py",
+    "master/github_app_check_push.py",
+    "master/buildbot.tac",
+    "worker/buildbot.tac",
+]
 min_confidence = 80
 
 [tool.codespell]

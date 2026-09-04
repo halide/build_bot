@@ -3,6 +3,7 @@
 venv/
 .venv/
 secrets/*.txt
+secrets/*.pem
 http.log
 twistd.hostname
 twistd.log

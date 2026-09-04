@@ -29,6 +29,7 @@ services:
     secrets:
       - db_password.txt
       - github_token.txt
+      - github_app_private_key.pem
       - halide_bb_pass.txt
       - webhook_token.txt
       - buildbot_www_pass.txt
@@ -70,6 +71,8 @@ secrets:
     file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/db_password.txt
   github_token.txt:
     file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/github_token.txt
+  github_app_private_key.pem:
+    file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/github_app_private_key.pem
   halide_bb_pass.txt:
     file: ${HALIDE_BB_MASTER_SECRETS_DIR:-./secrets}/halide_bb_pass.txt
   webhook_token.txt:
