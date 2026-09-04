@@ -3,9 +3,7 @@ import time
 import jwt
 import requests
 from buildbot.interfaces import IRenderable
-from buildbot.reporters.generators.build import BuildStartEndStatusGenerator
 from buildbot.reporters.github import GitHubStatusPush
-from buildbot.reporters.message import MessageFormatterRenderable
 from twisted.internet import defer, threads
 from zope.interface import implementer
 
@@ -53,23 +51,11 @@ class AppInstallationToken:
 
 class GitHubAppCheckPush(GitHubStatusPush):
     """Like GitHubStatusPush, but reports through the Checks API instead of the legacy Statuses
-    API, so a build in progress shows GitHub's spinner instead of a static pending dot. Requires
-    a GitHub App: pass an AppInstallationToken as `token=` (the Statuses API's PAT-based token
-    doesn't work here; only the Checks API used by this class requires App auth).
+    API, so a build shows GitHub's queued/in-progress states (and eventual spinner) instead of a
+    single static pending dot. Requires a GitHub App: pass an AppInstallationToken as `token=`
+    (the Statuses API's PAT-based token doesn't work here; only the Checks API used by this class
+    requires App auth).
     """
-
-    def _create_default_generators(self):
-        # GitHubStatusPush's defaults also include a BuildRequestGenerator, reporting once a
-        # build is merely queued (before any worker picks it up). Unlike statuses, check runs
-        # are persistent objects with their own id: creating one for the queued build-request
-        # report and another for the actual build start would leave the first orphaned forever
-        # (nothing ever completes it), rather than just being overwritten as a status would be.
-        return [
-            BuildStartEndStatusGenerator(
-                start_formatter=MessageFormatterRenderable("Build started."),
-                end_formatter=MessageFormatterRenderable("Build done."),
-            )
-        ]
 
     @defer.inlineCallbacks
     def _get_auth_header(self, props):
@@ -85,40 +71,40 @@ class GitHubAppCheckPush(GitHubStatusPush):
         output = {"title": context, "summary": description or ""}
 
         if state == "pending":
-            payload = {
-                "name": context,
-                "head_sha": sha,
-                "status": "in_progress",
-                "details_url": target_url,
-                "output": output,
-                "external_id": issue,
-            }
-            return (yield self._http.post(base, json=payload, headers=headers))
+            # GitHubStatusPush's default generators report both a build being merely queued
+            # (BuildRequestGenerator, before any worker picks it up) and a build actually
+            # starting (BuildStartEndStatusGenerator) with state == "pending" -- neither is
+            # "complete" yet. Only the queued report's target_url points at a buildrequest page
+            # rather than an actual build, so use that to tell the two apart.
+            status = "queued" if target_url and "/buildrequests/" in target_url else "in_progress"
+            payload = {"status": status, "details_url": target_url, "output": output}
+        else:
+            # GitHubStatusPush.sendMessage() already collapsed several build results into
+            # "error"; both "failure" and "error" map to the same GitHub conclusion.
+            conclusion = "success" if state == "success" else "failure"
+            payload = {"status": "completed", "conclusion": conclusion, "details_url": target_url, "output": output}
 
-        # The check run's id isn't threaded through from the "pending" call above, so look it up
-        # by name instead of tracking build-run state; one extra GET, but no persisted state.
+        # The check run's id isn't threaded through between calls, so look it up by name instead
+        # of tracking build-run state; one extra GET, but no persisted state. A build's queued,
+        # started, and completed reports all update the same check run this way.
         resp = yield self._http.get(
             f"/repos/{repo_user}/{repo_name}/commits/{sha}/check-runs",
             params={"check_name": context},
             headers=headers,
         )
         runs = (yield resp.json())["check_runs"]
-        if not runs:
-            return None
-
-        # GitHubStatusPush.sendMessage() already collapsed several build results into "error";
-        # both "failure" and "error" map to the same GitHub conclusion.
-        conclusion = "success" if state == "success" else "failure"
-        payload = {
-            "status": "completed",
-            "conclusion": conclusion,
-            "details_url": target_url,
-            "output": output,
-        }
-        # HTTPSession has no patch() wrapper (only get/put/post/delete); the Checks API update
-        # endpoint is PATCH-only, so fall through to the generic dispatcher it's built on.
-        return (
-            yield self._http.http._do_request(
-                self._http, "patch", f"{base}/{runs[0]['id']}", json=payload, headers=headers
+        if runs:
+            run_id = max(runs, key=lambda r: r["id"])["id"]
+            # HTTPSession has no patch() wrapper (only get/put/post/delete); the Checks API
+            # update endpoint is PATCH-only, so fall through to the generic dispatcher it's
+            # built on.
+            return (
+                yield self._http.http._do_request(
+                    self._http, "patch", f"{base}/{run_id}", json=payload, headers=headers
+                )
             )
-        )
+
+        # No existing check run (this is the first report for this build, or GitHub is still
+        # processing the previous write) -- create one from scratch.
+        payload = {**payload, "name": context, "head_sha": sha, "external_id": issue}
+        return (yield self._http.post(base, json=payload, headers=headers))
