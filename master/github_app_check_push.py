@@ -3,7 +3,9 @@ import time
 import jwt
 import requests
 from buildbot.interfaces import IRenderable
+from buildbot.reporters.generators.build import BuildStartEndStatusGenerator
 from buildbot.reporters.github import GitHubStatusPush
+from buildbot.reporters.message import MessageFormatterRenderable
 from twisted.internet import defer, threads
 from zope.interface import implementer
 
@@ -55,6 +57,19 @@ class GitHubAppCheckPush(GitHubStatusPush):
     a GitHub App: pass an AppInstallationToken as `token=` (the Statuses API's PAT-based token
     doesn't work here; only the Checks API used by this class requires App auth).
     """
+
+    def _create_default_generators(self):
+        # GitHubStatusPush's defaults also include a BuildRequestGenerator, reporting once a
+        # build is merely queued (before any worker picks it up). Unlike statuses, check runs
+        # are persistent objects with their own id: creating one for the queued build-request
+        # report and another for the actual build start would leave the first orphaned forever
+        # (nothing ever completes it), rather than just being overwritten as a status would be.
+        return [
+            BuildStartEndStatusGenerator(
+                start_formatter=MessageFormatterRenderable("Build started."),
+                end_formatter=MessageFormatterRenderable("Build done."),
+            )
+        ]
 
     @defer.inlineCallbacks
     def _get_auth_header(self, props):
