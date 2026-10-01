@@ -86,15 +86,21 @@ class GitHubAppCheckPush(GitHubStatusPush):
 
         # The check run's id isn't threaded through between calls, so look it up by name instead
         # of tracking build-run state; one extra GET, but no persisted state. A build's queued,
-        # started, and completed reports all update the same check run this way.
+        # started, and completed reports all update the same check run this way -- but only while
+        # that run is still open. A rebuild (via the Buildbot UI's "Rebuild", or a future handler
+        # for GitHub's "Re-run" webhook) reports a fresh "pending" after the previous run already
+        # went to "completed"; GitHub's own guidance for handling reruns is to start a new check
+        # run rather than resurrect a completed one (see "Building CI checks with a GitHub App" /
+        # handling the check_run "rerequested" event), so only PATCH runs that are still open.
         resp = yield self._http.get(
             f"/repos/{repo_user}/{repo_name}/commits/{sha}/check-runs",
             params={"check_name": context},
             headers=headers,
         )
         runs = (yield resp.json())["check_runs"]
-        if runs:
-            run_id = max(runs, key=lambda r: r["id"])["id"]
+        open_runs = [r for r in runs if r["status"] != "completed"]
+        if open_runs:
+            run_id = max(open_runs, key=lambda r: r["id"])["id"]
             # HTTPSession has no patch() wrapper (only get/put/post/delete); the Checks API
             # update endpoint is PATCH-only, so fall through to the generic dispatcher it's
             # built on.
@@ -104,7 +110,8 @@ class GitHubAppCheckPush(GitHubStatusPush):
                 )
             )
 
-        # No existing check run (this is the first report for this build, or GitHub is still
-        # processing the previous write) -- create one from scratch.
+        # No open check run (this is the first report for this build, GitHub is still
+        # processing the previous write, or the previous run already completed and this is a
+        # rebuild) -- create one from scratch.
         payload = {**payload, "name": context, "head_sha": sha, "external_id": issue}
         return (yield self._http.post(base, json=payload, headers=headers))
