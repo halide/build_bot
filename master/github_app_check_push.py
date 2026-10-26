@@ -3,6 +3,7 @@ import time
 import jwt
 import requests
 from buildbot.interfaces import IRenderable
+from buildbot.process.results import CANCELLED
 from buildbot.reporters.github import GitHubStatusPush
 from twisted.internet import defer, threads
 from zope.interface import implementer
@@ -57,6 +58,18 @@ class GitHubAppCheckPush(GitHubStatusPush):
     requires App auth).
     """
 
+    def sendMessage(self, reports):
+        # Preserve the result through GitHubStatusPush's lossy conversion to legacy states.
+        report = reports[0]
+        build = report["builds"][0]
+        properties = {
+            **build["properties"],
+            "_github_check_result": (build["results"], "GitHubAppCheckPush"),
+        }
+        build = {**build, "properties": properties}
+        report = {**report, "builds": [build, *report["builds"][1:]]}
+        return super().sendMessage([report, *reports[1:]])
+
     @defer.inlineCallbacks
     def _get_auth_header(self, props):
         token = yield props.render(self.token)
@@ -79,9 +92,10 @@ class GitHubAppCheckPush(GitHubStatusPush):
             status = "queued" if target_url and "/buildrequests/" in target_url else "in_progress"
             payload = {"status": status, "details_url": target_url, "output": output}
         else:
-            # GitHubStatusPush.sendMessage() already collapsed several build results into
-            # "error"; both "failure" and "error" map to the same GitHub conclusion.
-            conclusion = "success" if state == "success" else "failure"
+            if props.getProperty("_github_check_result") == CANCELLED:
+                conclusion = "cancelled"
+            else:
+                conclusion = "success" if state == "success" else "failure"
             payload = {"status": "completed", "conclusion": conclusion, "details_url": target_url, "output": output}
 
         # The check run's id isn't threaded through between calls, so look it up by name instead

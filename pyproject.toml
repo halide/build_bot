@@ -9,6 +9,10 @@ dev = [
     "pre-commit~=4.2",
 ]
 
+[tool.pytest.ini_options]
+testpaths = ["test"]
+pythonpath = ["master"]
+
 [tool.ruff]
 line-length = 120
 extend-include = ["*.tac", "*.cfg"]
