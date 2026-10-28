@@ -6,6 +6,8 @@ To get started hacking, install Python 3.10+ and [uv]. Then run:
 $ uv sync --all-packages
 ```
 
+Run the unit tests with `uv run --package master pytest`.
+
 # Master configuration
 
 The master is deployed via [Docker Compose][dc], which manages three services:
