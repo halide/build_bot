@@ -29,7 +29,7 @@ class _BytesFileWriter(FileWriterImpl):
         pass
 
 
-class CTest(ShellMixin, CompositeStepMixin, BuildStep):
+class CTest(ShellMixin, CompositeStepMixin, BuildStep):  # ty: ignore[invalid-attribute-override]
     name = "ctest"
 
     def __init__(

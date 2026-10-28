@@ -5,8 +5,8 @@ requires-python = ">=3.12"
 
 [dependency-groups]
 dev = [
-    "ruff~=0.16.0",
-    "pre-commit~=4.2",
+    "ruff~=0.17.2",
+    "pre-commit~=4.7",
 ]
 
 [tool.pytest.ini_options]
