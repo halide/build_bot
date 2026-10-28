@@ -18,7 +18,7 @@ def reporter():
     response = Mock(code=200)
     reporter._http = Mock()
     reporter._http.get.return_value = defer.succeed(
-        Mock(json=Mock(return_value=defer.succeed({"check_runs": [{"id": 42}]})))
+        Mock(json=Mock(return_value=defer.succeed({"check_runs": [{"id": 42, "status": "in_progress"}]})))
     )
     reporter._http.http._do_request.return_value = defer.succeed(response)
     reporter._http.post.return_value = defer.succeed(response)
@@ -83,11 +83,30 @@ def test_pending_reports(reporter, result, complete, queued, status):
     assert "conclusion" not in payload
 
 
+@pytest.mark.parametrize("runs", [[], [{"id": 42, "status": "completed"}]])
 @pytest_twisted.inlineCallbacks
-def test_cancelled_buildrequest_creates_completed_check(reporter):
-    reporter._http.get.return_value = defer.succeed(Mock(json=Mock(return_value=defer.succeed({"check_runs": []}))))
+def test_cancelled_buildrequest_creates_completed_check(reporter, runs):
+    reporter._http.get.return_value = defer.succeed(Mock(json=Mock(return_value=defer.succeed({"check_runs": runs}))))
     yield reporter.sendMessage([make_report(CANCELLED, queued=True)])
     payload = reporter._http.post.call_args.kwargs["json"]
     assert payload["status"] == "completed"
     assert payload["conclusion"] == "cancelled"
     assert payload["head_sha"] == "abc123"
+    reporter._http.http._do_request.assert_not_called()
+
+
+@pytest_twisted.inlineCallbacks
+def test_updates_newest_open_check(reporter):
+    runs = [
+        {"id": 43, "status": "queued"},
+        {"id": 44, "status": "completed"},
+        {"id": 42, "status": "in_progress"},
+    ]
+    reporter._http.get.return_value = defer.succeed(Mock(json=Mock(return_value=defer.succeed({"check_runs": runs}))))
+    yield reporter.sendMessage([make_report(SUCCESS)])
+    assert reporter._http.http._do_request.call_args.args == (
+        reporter._http,
+        "patch",
+        "/repos/halide/Halide/check-runs/43",
+    )
+    reporter._http.post.assert_not_called()
