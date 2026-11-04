@@ -7,7 +7,7 @@ dependencies = [
     "buildbot~=4.0",
     "psycopg2-binary~=2.9", # PostgreSQL database driver
     "treq>=25.5", # required by GitHubStatusPush
-    "twisted>=23.10",
+    "twisted>=26.10.0rc1",
     "zstandard>=0.22", # log chunk compression (c['logCompressionMethod'])
 ]
 
